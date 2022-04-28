@@ -1,12 +1,4 @@
-import {
-  CSSProperties,
-  ReactNode,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useLayoutEffect,
-  useRef,
-} from "react";
+import { CSSProperties, ReactNode, useLayoutEffect, useRef } from "react";
 import { carouselWidgets, layout, widgets } from "./state";
 import { compactWidget, moveElement } from "./utils/utlis";
 
@@ -32,118 +24,100 @@ interface DragWidget {
   height: number;
 }
 
-// export interface DropReturn {
-//   container: string;
-//   offsetTop: number | null;
-//   left: number;
-//   top: number;
-//   currentDropZone: string;
-//   widgetIndex: number;
-//   clientOffset: XYCoord | null;
-// }
+export default function Container({
+  children,
+  title,
+  snapToGrid,
+}: ContainerProps): JSX.Element {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const widgetSnap = useSnapshot(widgets);
+  const thumbnailSnap = useSnapshot(carouselWidgets);
+  const layoutSnap = useSnapshot(layout);
+  const dropRef = useRef<HTMLDivElement>(null);
 
-const Container = forwardRef(
-  ({ children, title, snapToGrid }: ContainerProps, ref): JSX.Element => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const widgetSnap = useSnapshot(widgets);
-    const thumbnailSnap = useSnapshot(carouselWidgets);
-    const layoutSnap = useSnapshot(layout);
-    const dropRef = useRef<HTMLDivElement>(null);
-    useImperativeHandle(ref, () => {
-      const containerOffsetTop =
-        (containerRef.current?.getBoundingClientRect().top || 0) +
-        window.scrollY +
-        (containerRef.current?.scrollTop || 0);
-      return { containerOffsetTop };
-    });
-
-    useLayoutEffect(() => {
-      const updateContainerWidth = () => {
-        if (!containerRef.current) {
-          return;
-        }
-        layout.dropTargetWidth = containerRef.current.clientWidth;
-      };
-      const ro = new ResizeObserver(updateContainerWidth);
-      if (containerRef.current) {
-        ro.observe(containerRef.current);
+  useLayoutEffect(() => {
+    const updateContainerWidth = () => {
+      if (!containerRef.current) {
+        return;
       }
-      return () => {
-        ro.disconnect();
-      };
-    }, []);
-
-    const [{ isOver, canDrop }, drop] = useDrop(
-      () => ({
-        accept: [ItemTypes.WIDGET, ItemTypes.WIDGET_THUMBNAIL],
-        drop(item: DragWidget, monitor): void {
-          const containerOffsetTop =
-            (containerRef.current?.getBoundingClientRect().top || 0) +
-            window.scrollY +
-            (containerRef.current?.scrollTop || 0);
-
-          const { x, y } = monitor.getSourceClientOffset() as XYCoord;
-          let left = x;
-          let top = y - containerOffsetTop;
-          if (snapToGrid) {
-            // console.log("Container triggers snapToGrid()");
-            [left, top] = doSnapToGrid({
-              x: left,
-              y: top,
-              columns: layoutSnap.columns,
-            });
-          }
-          const itemType = monitor.getItemType();
-          let newWidgets: Widgets = [];
-          if (itemType === ItemTypes.WIDGET) {
-            const moveWidgets = Array.from(widgetSnap, (item) => ({ ...item }));
-            const index = moveWidgets.findIndex(
-              (widget) => widget.name === item.name
-            );
-            const cW = { ...moveWidgets[index], top: top - 1, left };
-            moveWidgets.splice(index, 1);
-            moveWidgets.push(cW);
-            newWidgets = moveWidgets;
-          }
-
-          if (itemType === ItemTypes.WIDGET_THUMBNAIL) {
-            const index = thumbnailSnap.findIndex(
-              (widget) => widget.name === item.name
-            );
-            const [carouselWidget] = carouselWidgets.splice(index, 1);
-            const cW = { ...carouselWidget, top, left };
-            const moveWidgets = [
-              ...Array.from(widgetSnap, (item) => ({ ...item })),
-              cW,
-            ];
-            newWidgets = moveWidgets;
-          }
-          widgets.splice(0, widgetSnap.length, ...compactWidget(newWidgets, 3));
-        },
-        collect(monitor) {
-          return { isOver: !!monitor.isOver(), canDrop: !!monitor.canDrop() };
-        },
-      }),
-      [widgetSnap, thumbnailSnap, layoutSnap]
-    );
-
-    const styles: CSSProperties = {
-      height: "100%",
-      width: "100%",
-      backgroundColor: "rgba(255, 255, 255, 1)",
-      position: "relative",
-      border: "1px solid red",
-      overflow: "auto",
+      layout.dropTargetWidth = containerRef.current.clientWidth;
     };
-    drop(dropRef);
-    return (
-      <div ref={containerRef} style={{ height: "100%" }}>
-        <div ref={dropRef} style={{ ...styles }}>
-          {children}
-        </div>
-      </div>
-    );
-  }
-);
+    const ro = new ResizeObserver(updateContainerWidth);
+    if (containerRef.current) {
+      ro.observe(containerRef.current);
+    }
+    return () => {
+      ro.disconnect();
+    };
+  }, []);
 
-export default Container;
+  const [{ isOver, canDrop }, drop] = useDrop(
+    () => ({
+      accept: [ItemTypes.WIDGET, ItemTypes.WIDGET_THUMBNAIL],
+      drop(item: DragWidget, monitor): void {
+        const containerOffsetTop = (
+          containerRef.current?.parentNode as HTMLDivElement
+        )?.offsetTop;
+
+        const { x, y } = monitor.getSourceClientOffset() as XYCoord;
+        let left = x;
+        let top = y - containerOffsetTop + (window.scrollY + 0);
+        if (snapToGrid) {
+          // console.log("Container triggers snapToGrid()");
+          [left, top] = doSnapToGrid({
+            x: left,
+            y: top,
+            columns: layoutSnap.columns,
+          });
+        }
+        const itemType = monitor.getItemType();
+        let newWidgets: Widgets = [];
+        if (itemType === ItemTypes.WIDGET) {
+          const moveWidgets = Array.from(widgetSnap, (item) => ({ ...item }));
+          const index = moveWidgets.findIndex(
+            (widget) => widget.name === item.name
+          );
+          const cW = { ...moveWidgets[index], top: top - 1, left };
+          moveWidgets.splice(index, 1);
+          moveWidgets.push(cW);
+          newWidgets = moveWidgets;
+        }
+
+        if (itemType === ItemTypes.WIDGET_THUMBNAIL) {
+          const index = thumbnailSnap.findIndex(
+            (widget) => widget.name === item.name
+          );
+          const [carouselWidget] = carouselWidgets.splice(index, 1);
+          const cW = { ...carouselWidget, top, left };
+          const moveWidgets = [
+            ...Array.from(widgetSnap, (item) => ({ ...item })),
+            cW,
+          ];
+          newWidgets = moveWidgets;
+        }
+        widgets.splice(0, widgetSnap.length, ...compactWidget(newWidgets, 3));
+      },
+      collect(monitor) {
+        return { isOver: !!monitor.isOver(), canDrop: !!monitor.canDrop() };
+      },
+    }),
+    [widgetSnap, thumbnailSnap, layoutSnap]
+  );
+
+  const styles: CSSProperties = {
+    height: "100%",
+    width: "100%",
+    backgroundColor: "rgba(255, 255, 255, 1)",
+    position: "relative",
+    border: "1px solid red",
+    overflow: "auto",
+  };
+  drop(dropRef);
+  return (
+    <div ref={containerRef} style={{ height: "100%" }}>
+      <div ref={dropRef} style={{ ...styles }}>
+        {children}
+      </div>
+    </div>
+  );
+}

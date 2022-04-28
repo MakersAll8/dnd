@@ -1,4 +1,4 @@
-import { CSSProperties, FC, MutableRefObject, useMemo, useRef } from "react";
+import { CSSProperties, FC, RefObject, useMemo, useRef } from "react";
 import {
   HEIGHT_COEFFICIENT,
   currentDraggingWidget,
@@ -28,13 +28,13 @@ const layerStyles: CSSProperties = {
 
 export interface CustomDragLayerProps {
   snapToGrid?: boolean;
-  containerRef: MutableRefObject<{ container: number }>;
+  dashboardRef: RefObject<HTMLDivElement>;
 }
 
 // drag layer draws over drop target and return a custom drag preview to
 // replace default drag preview provided by DOM dnd api.
 export const CustomDragLayer: FC<CustomDragLayerProps> = ({
-  containerRef,
+  dashboardRef,
   snapToGrid: snapToGridProp,
 }) => {
   function getItemStyles(
@@ -59,7 +59,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
     // }
 
     const transform = `translate(${x}px, ${
-      y - (containerRef.current?.containerOffsetTop || 0)
+      y - (dashboardRef.current?.offsetTop || 0) + (window.scrollY || 0)
     }px)`;
     return {
       transform,
@@ -85,7 +85,9 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
   const [left, top] = snapToGrid({
     x: currentOffset?.x || 0,
     y:
-      (currentOffset?.y || 0) - (containerRef.current?.containerOffsetTop || 0),
+      (currentOffset?.y || 0) -
+      (dashboardRef.current?.offsetTop || 0) +
+      (window.scrollY || 0),
     columns: layoutSnap.columns,
   });
 
@@ -167,16 +169,6 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
     height: item.height * HEIGHT_COEFFICIENT,
     width: Math.min(layoutSnap.columns, item.width) * columnWidth,
   };
-  // widgetsSnap.some((widgetItem) =>
-  //   collides(widgetItem, {
-  //     name: item.name,
-  //     left,
-  //     top,
-  //     height: item.height,
-  //     width: Math.min(layoutSnap.columns, item.width)
-  //   })
-  // );
-  // console.log("overlaped: ", isCollision);
   return (
     <>
       <div style={layerStyles}>

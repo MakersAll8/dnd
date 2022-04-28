@@ -1,9 +1,10 @@
-import { memo, FC, CSSProperties, useEffect, ReactNode, useRef } from "react";
-import { useDrag } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
+import { CSSProperties, FC, memo, useEffect, useRef } from "react";
 import { HEIGHT_COEFFICIENT, layout } from "./state";
+
+import { ItemTypes } from "./ItemTypes";
 import { Widget } from "./Widget";
 import { getEmptyImage } from "react-dnd-html5-backend";
+import { useDrag } from "react-dnd";
 import { useSnapshot } from "valtio";
 
 export interface DraggableWidgetProps {
@@ -14,7 +15,7 @@ export interface DraggableWidgetProps {
   top: number;
   hideSourceOnDrag?: boolean;
   hidden?: boolean;
-  children?: ReactNode;
+  children?: () => JSX.Element;
 }
 
 export const DraggableWidget: FC<DraggableWidgetProps> = memo(
@@ -40,7 +41,7 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
         opacity: isDragging ? 0 : 1,
         height: height * HEIGHT_COEFFICIENT,
         width: Math.min(layoutSnap.columns, width) * columnWidth,
-        borderRadius: "8px"
+        borderRadius: "8px",
       };
     }
 
@@ -55,11 +56,11 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
           top,
           height,
           width,
-          children
+          children,
         },
         collect: (monitor) => ({
-          isDragging: monitor.isDragging()
-        })
+          isDragging: monitor.isDragging(),
+        }),
       }),
       [name, left, top]
     );

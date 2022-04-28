@@ -1,7 +1,7 @@
-import React, { CSSProperties, FC, memo, ReactNode } from "react";
+import React, { CSSProperties, FC, memo } from "react";
 
 export interface WidgetProps {
-  children?: ReactNode;
+  children?: () => JSX.Element;
   preview?: boolean;
   name: string;
   highlight?: boolean;
@@ -11,7 +11,7 @@ export const Widget: FC<WidgetProps> = memo(function Widget({
   name,
   children,
   preview,
-  highlight
+  highlight,
 }) {
   const Component = children;
   const styles: CSSProperties = {
@@ -20,7 +20,7 @@ export const Widget: FC<WidgetProps> = memo(function Widget({
     overflow: "auto",
     backgroundColor: highlight ? "yellow" : "lightyellow",
     height: "100%",
-    borderRadius: "8px"
+    borderRadius: "8px",
   };
   return (
     <div style={{ ...styles }} role={preview ? "WidgetPreview" : "Widget"}>

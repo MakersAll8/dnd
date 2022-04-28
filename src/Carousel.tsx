@@ -1,8 +1,10 @@
 import { CSSProperties, ReactNode, useRef } from "react";
+import { carouselWidgets, widgets } from "./state";
+
 import { ItemTypes } from "./ItemTypes";
 import { useDrop } from "react-dnd";
 import { useSnapshot } from "valtio";
-import { widgets, carouselWidgets } from "./state";
+
 interface ContainerProps {
   children?: ReactNode;
 }
@@ -31,7 +33,7 @@ export function Carousel({ children }: ContainerProps): JSX.Element {
       },
       collect(monitor) {
         return { isOver: !!monitor.isOver(), canDrop: !!monitor.canDrop() };
-      }
+      },
     }),
     [widgetsSnap]
   );
@@ -40,7 +42,7 @@ export function Carousel({ children }: ContainerProps): JSX.Element {
     height: "100%",
     width: "100%",
     backgroundColor: isOver ? "darkkhaki" : canDrop ? "darkgreen" : "lightblue",
-    position: "relative"
+    position: "relative",
   };
   return (
     <div ref={containerRef} style={{ height: "150px" }}>

@@ -7,6 +7,7 @@ import { CustomDragLayer } from "./CustomDragLayer";
 import { DraggableWidget } from "./DraggableWidget";
 import { WidgetThumbnail } from "./WidgetThumbnail";
 import { useSnapshot } from "valtio";
+
 interface WidgetBoardProps {
   children?: ReactNode;
   widgets: Widget[];
@@ -19,7 +20,7 @@ export default function WidgetBoard({
 }: WidgetBoardProps): JSX.Element {
   const [edit, setEdit] = useState(false);
   const layoutSnap = useSnapshot(layout);
-  const containerRef = useRef();
+  const dashboardRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -53,7 +54,7 @@ export default function WidgetBoard({
         )}
 
         <div style={{ height: "100%", position: "relative" }}>
-          <Container ref={containerRef} title="Widgets" snapToGrid={true}>
+          <Container title="Widgets" snapToGrid={true}>
             {widgets.map((availableWidget) => {
               const { name, top, left, children, height, width } =
                 availableWidget;
@@ -72,7 +73,7 @@ export default function WidgetBoard({
               );
             })}
           </Container>
-          <CustomDragLayer containerRef={containerRef} />
+          <CustomDragLayer dashboardRef={dashboardRef} />
         </div>
       </div>
     </>
