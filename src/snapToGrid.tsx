@@ -1,14 +1,15 @@
 import { HEIGHT_COEFFICIENT } from "./state";
+import { MediaColumns } from "./hooks/useMediaQuery";
 export interface SnapToGridProps {
   x: number;
   y: number;
-  columns: number;
+  columns: MediaColumns;
 }
 
 export function snapToGrid({
   x,
   y,
-  columns
+  columns,
 }: SnapToGridProps): [number, number] {
   const windowWidth = window.innerWidth;
   let snappedX;

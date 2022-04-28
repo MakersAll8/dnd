@@ -87,12 +87,12 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
   // initialOffset and currentOffset are relative to the entire document flow
   const [left, top] = snapToGrid({
     x: currentOffset?.x || 0,
-    y:
-      (currentOffset?.y || 0) -
-      (dashboardRef.current?.offsetTop || 0) +
-      (window.scrollY || 0),
+    y: currentOffset?.y || 0 - (dashboardRef.current?.offsetTop || 0),
+    // (window.scrollY || 0)
     columns: layoutSnap.columns,
   });
+
+  console.log(`left: ${left} top: ${top}`);
 
   function renderItem() {
     switch (itemType) {

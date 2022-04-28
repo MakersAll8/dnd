@@ -53,7 +53,10 @@ export default function WidgetBoard({
           </Carousel>
         )}
 
-        <div style={{ height: "100%", position: "relative" }}>
+        <div
+          ref={dashboardRef}
+          style={{ height: "100%", position: "relative" }}
+        >
           <Container title="Widgets" snapToGrid={true}>
             {widgets.map((availableWidget) => {
               const { name, top, left, children, height, width } =
