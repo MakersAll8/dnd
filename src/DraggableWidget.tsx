@@ -2,6 +2,7 @@ import { CSSProperties, FC, memo, useEffect, useRef } from "react";
 import { HEIGHT_COEFFICIENT, layout } from "./state";
 
 import { ItemTypes } from "./ItemTypes";
+import { MediaColumns } from "./hooks/useMediaQuery";
 import { Widget } from "./Widget";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { useDrag } from "react-dnd";
@@ -9,7 +10,7 @@ import { useSnapshot } from "valtio";
 
 export interface DraggableWidgetProps {
   name: string;
-  width: number;
+  width: MediaColumns;
   height: number;
   left: number;
   top: number;
@@ -27,7 +28,7 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
       top: number,
       isDragging: boolean,
       height: number,
-      width: number
+      width: MediaColumns
     ): CSSProperties {
       const transform = `translate3d(${left}px, ${top}px, 0)`;
       // const transform = `translate3d(${0}px, ${0}px, 0)`;

@@ -3,6 +3,7 @@ import { carouselWidgets, layout, widgets } from "./state";
 import { compactWidget, moveElement } from "./utils/utlis";
 
 import { ItemTypes } from "./ItemTypes";
+import { MediaColumns } from "./hooks/useMediaQuery";
 import type { Widgets } from "./state";
 import type { XYCoord } from "react-dnd";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
@@ -20,7 +21,7 @@ interface DragWidget {
   name: string;
   top?: number;
   left?: number;
-  width: number;
+  width: MediaColumns;
   height: number;
 }
 

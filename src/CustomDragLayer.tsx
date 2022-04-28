@@ -1,6 +1,8 @@
 import { CSSProperties, FC, RefObject, useMemo, useRef } from "react";
 import {
+  CarouselWidget,
   HEIGHT_COEFFICIENT,
+  Widget,
   currentDraggingWidget,
   layout,
   widgets,
@@ -8,6 +10,7 @@ import {
 import { compactWidget, getSnapToPlace } from "./utils/utlis";
 
 import { ItemTypes } from "./ItemTypes";
+import { MediaColumns } from "./hooks/useMediaQuery";
 import { WidgetDragPreview } from "./WidgetDragPreview";
 import { WidgetThumbnail } from "./WidgetThumbnail";
 import type { XYCoord } from "react-dnd";
@@ -70,7 +73,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
 
   const { itemType, isDragging, item, initialOffset, currentOffset } =
     useDragLayer((monitor) => ({
-      item: monitor.getItem(),
+      item: monitor.getItem() as Widget | CarouselWidget,
       itemType: monitor.getItemType(),
       initialOffset: monitor.getInitialSourceClientOffset(),
       currentOffset: monitor.getSourceClientOffset(),
@@ -126,7 +129,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
     left: left,
     top: top,
     height: item.height,
-    width: Math.min(layoutSnap.columns, item.width),
+    width: Math.min(layoutSnap.columns, item.width) as MediaColumns,
   };
 
   // we need to calculate the right place position of the snap

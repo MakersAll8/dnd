@@ -1,4 +1,4 @@
-import { useMemo, useLayoutEffect, useState, useCallback } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 
 export type MediaName =
   | "phone"
@@ -22,7 +22,7 @@ export const MEDIA_QUERIES = [
   { queryText: "(min-width: 992px)", mediaName: "laptop" },
   { queryText: "(min-width: 768px)", mediaName: "tablet_landscape" },
   { queryText: "(min-width: 576px)", mediaName: "tablet_portrait" },
-  { queryText: "(min-width: 0px)", mediaName: "phone" }
+  { queryText: "(min-width: 0px)", mediaName: "phone" },
 ];
 
 export function useMediaQuery(mediaQueries: MediaQueries) {
@@ -31,7 +31,7 @@ export function useMediaQuery(mediaQueries: MediaQueries) {
   const getMediaQueryLists = useCallback(() => {
     const mediaQueryLists = mediaQueries.map((query) => ({
       mediaQueryList: window.matchMedia(query.queryText),
-      mediaName: query.mediaName
+      mediaName: query.mediaName,
     }));
 
     const matches: MediaMatches[] = mediaQueryLists.map(
@@ -40,7 +40,7 @@ export function useMediaQuery(mediaQueries: MediaQueries) {
           return {
             media: mediaQueryList.mediaQueryList.media,
             mediaQueryIndex: index,
-            mediaName: mediaQueryList.mediaName
+            mediaName: mediaQueryList.mediaName,
           };
         }
         return undefined;
@@ -63,7 +63,13 @@ export function useMediaQuery(mediaQueries: MediaQueries) {
   return { media };
 }
 
-export function useDropTargetColumns() {
+export interface DropTargetColumnsReturn {
+  columns: MediaColumns;
+}
+
+export type MediaColumns = 1 | 2 | 3;
+
+export function useDropTargetColumns(): DropTargetColumnsReturn {
   const { media } = useMediaQuery(MEDIA_QUERIES);
   const columns = useMemo(() => {
     if (!media) {
@@ -89,15 +95,3 @@ export function useDropTargetColumns() {
 
   return { columns };
 }
-
-// export function useIsScreen(mediaName: MediaName) {
-//   const { media } = useMediaQuery(MEDIA_QUERIES);
-//   const isScreen = useMemo(() => {
-//     if (!media) {
-//       return false;
-//     }
-//     return media.some((m) => m?.mediaName === mediaName);
-//   }, [media, mediaName]);
-
-//   return { isScreen };
-// }

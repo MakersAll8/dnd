@@ -1,6 +1,7 @@
 import { CSSProperties, FC, memo } from "react";
 import { HEIGHT_COEFFICIENT, layout } from "./state";
 
+import { MediaColumns } from "./hooks/useMediaQuery";
 import { Widget } from "./Widget";
 import { useSnapshot } from "valtio";
 
@@ -9,7 +10,7 @@ export interface WidgetDragPreviewProps {
   children?: () => JSX.Element;
   shadowPosition: { left: number; top: number };
   height: number;
-  width: number;
+  width: MediaColumns;
 }
 
 export const WidgetDragPreview: FC<WidgetDragPreviewProps> = memo(

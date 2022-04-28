@@ -1,15 +1,12 @@
+import { MediaColumns } from "./hooks/useMediaQuery";
 import { WeatherApp } from "./WeatherApp";
 import { proxy } from "valtio";
 
 export const HEIGHT_COEFFICIENT = 10;
 
-export interface Widget {
-  name: string;
+export interface Widget extends CarouselWidget {
   left: number;
   top: number;
-  children?: () => JSX.Element;
-  height: number;
-  width: number;
   moved?: boolean;
   isDragging?: boolean;
 }
@@ -20,12 +17,12 @@ export interface CarouselWidget {
   name: string;
   children?: () => JSX.Element;
   height: number;
-  width: number;
+  width: MediaColumns;
 }
 
 export interface Layout {
   dropTargetWidth: number;
-  columns: number;
+  columns: MediaColumns;
   getColumnWidth: () => number;
 }
 
@@ -34,7 +31,7 @@ export interface Placeholder {
   left: number;
   top: number;
   height: number;
-  width: number;
+  width: MediaColumns | 0;
   isPlaceholder: true;
 }
 
