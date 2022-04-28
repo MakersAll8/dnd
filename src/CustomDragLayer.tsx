@@ -87,12 +87,13 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
   // initialOffset and currentOffset are relative to the entire document flow
   const [left, top] = snapToGrid({
     x: currentOffset?.x || 0,
-    y: currentOffset?.y || 0 - (dashboardRef.current?.offsetTop || 0),
-    // (window.scrollY || 0)
+    y:
+      currentOffset?.y ||
+      0 - (dashboardRef.current?.offsetTop || 0) + (window.scrollY || 0),
     columns: layoutSnap.columns,
   });
 
-  console.log(`left: ${left} top: ${top}`);
+  // console.log(`left: ${left} top: ${top}`);
 
   function renderItem() {
     switch (itemType) {
@@ -150,12 +151,12 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
       ...newWidgetsSnap.filter((i) => i.name !== "snap"),
       oldWidget,
     ];
-    console.log({
-      oldLeft,
-      _left,
-      oldTop,
-      top,
-    });
+    // console.log({
+    //   oldLeft,
+    //   _left,
+    //   oldTop,
+    //   top,
+    // });
     currentDraggingItemName.current = {
       name: item.name,
       left: _left,

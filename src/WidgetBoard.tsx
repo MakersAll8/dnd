@@ -24,8 +24,7 @@ export default function WidgetBoard({
 
   return (
     <>
-      <div className="testPoint" />
-      <div style={{ height: "100%" }}>
+      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
         <button
           onClick={() => {
             setEdit((toggle) => !toggle);
@@ -53,10 +52,7 @@ export default function WidgetBoard({
           </Carousel>
         )}
 
-        <div
-          ref={dashboardRef}
-          style={{ height: "100%", position: "relative" }}
-        >
+        <div ref={dashboardRef} style={{ flexGrow: 1, position: "relative" }}>
           <Container title="Widgets" snapToGrid={true}>
             {widgets.map((availableWidget) => {
               const { name, top, left, children, height, width } =
