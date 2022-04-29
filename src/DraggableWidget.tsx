@@ -31,7 +31,6 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
       width: MediaColumns
     ): CSSProperties {
       const transform = `translate3d(${left}px, ${top}px, 0)`;
-      // const transform = `translate3d(${0}px, ${0}px, 0)`;
       return {
         boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
         position: "absolute",

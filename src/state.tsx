@@ -79,12 +79,3 @@ export const layout: Layout = proxy<Layout>({
     return this.dropTargetWidth / this.columns;
   },
 });
-
-export const currentDraggingWidget = proxy<Placeholder>({
-  isPlaceholder: true,
-  name: "Placeholder",
-  left: 0,
-  top: 0,
-  width: 0,
-  height: 0,
-});

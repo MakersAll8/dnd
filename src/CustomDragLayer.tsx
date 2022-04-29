@@ -1,9 +1,8 @@
-import { CSSProperties, FC, RefObject, useMemo, useRef } from "react";
+import { CSSProperties, FC, RefObject, useRef } from "react";
 import {
   CarouselWidget,
   HEIGHT_COEFFICIENT,
   Widget,
-  currentDraggingWidget,
   layout,
   widgets,
 } from "./state";
@@ -122,7 +121,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
   const oldWidget = newWidgetsSnap.find((_item) => _item.name === item.name);
   newWidgetsSnap = newWidgetsSnap.filter((_item) => _item.name !== item.name);
   newWidgetsSnap.push(_snapWidgetDim);
-  newWidgetsSnap = compactWidget(newWidgetsSnap, 3);
+  newWidgetsSnap = compactWidget(newWidgetsSnap, layoutSnap.columns);
   const { left: _left, top: _top } = getSnapToPlace(newWidgetsSnap);
   const { name, left: oldLeft, top: oldTop } = currentDraggingItemName.current;
   if (name !== item.name || oldLeft !== _left || oldTop !== _top) {
