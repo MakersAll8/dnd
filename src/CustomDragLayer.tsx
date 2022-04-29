@@ -93,8 +93,6 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
     columns: layoutSnap.columns,
   });
 
-  // console.log(`left: ${left} top: ${top}`);
-
   function renderItem() {
     switch (itemType) {
       case ItemTypes.WIDGET:
@@ -110,20 +108,9 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
     }
   }
 
-  useMemo(() => {
-    const draggingItemIndex =
-      item && widgetsSnap.findIndex((x) => x.name === item.name);
-    if (draggingItemIndex !== -1 && draggingItemIndex !== null) {
-      const draggingItem = widgets[draggingItemIndex];
-      Object.assign(currentDraggingWidget, draggingItem, { left, top });
-    }
-  }, [item, widgetsSnap, left, top]);
-
   if (!isDragging) {
     return null;
   }
-
-  //console.log(currentDraggingWidgetSnap);
 
   const _snapWidgetDim = {
     name: "snap",
@@ -140,16 +127,12 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
   newWidgetsSnap.push(_snapWidgetDim);
   newWidgetsSnap = compactWidget(newWidgetsSnap, 3);
   const { left: _left, top: _top } = getSnapToPlace(newWidgetsSnap);
-
   const { name, left: oldLeft, top: oldTop } = currentDraggingItemName.current;
   if (
-    oldWidget &&
     (name !== item.name || oldLeft !== _left || oldTop !== _top)
   ) {
-    const newWidgetList = [
-      ...newWidgetsSnap.filter((i) => i.name !== "snap"),
-      oldWidget,
-    ];
+    const newWidgetList = newWidgetsSnap.filter((i) => i.name !== "snap");
+    if(oldWidget){newWidgetList.push(oldWidget)}
     currentDraggingItemName.current = {
       name: item.name,
       left: _left,
