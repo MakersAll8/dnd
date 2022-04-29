@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode, useLayoutEffect, useRef } from "react";
 import { carouselWidgets, layout, widgets } from "./state";
-import { compactWidget, moveElement } from "./utils/utlis";
+import { compactWidget, copyWidgets } from "./utils/utlis";
 
 import { ItemTypes } from "./ItemTypes";
 import { MediaColumns } from "./hooks/useMediaQuery";
@@ -64,7 +64,6 @@ export default function Container({
         let left = x;
         let top = y - containerOffsetTop + (window.scrollY + 0);
         if (snapToGrid) {
-          // console.log("Container triggers snapToGrid()");
           [left, top] = doSnapToGrid({
             x: left,
             y: top,
@@ -74,7 +73,7 @@ export default function Container({
         const itemType = monitor.getItemType();
         let newWidgets: Widgets = [];
         if (itemType === ItemTypes.WIDGET) {
-          const moveWidgets = Array.from(widgetSnap, (item) => ({ ...item }));
+          const moveWidgets = copyWidgets(widgetSnap);
           const index = moveWidgets.findIndex(
             (widget) => widget.name === item.name
           );

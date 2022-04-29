@@ -145,11 +145,11 @@ function moveElementAwayFromCollision(
   );
 }
 
-interface TcompactWidget extends Widget {
+interface TCompactWidget extends Widget {
   computed?: boolean;
 }
 
-function calculateTopLayout(stortedWidgets: TcompactWidget[][]) {
+function calculateTopLayout(stortedWidgets: TCompactWidget[][]) {
   stortedWidgets.forEach((columnWdiget) => {
     let initialTop = 0;
     columnWdiget.forEach((item, index, array) => {
@@ -168,14 +168,14 @@ function calculateTopLayout(stortedWidgets: TcompactWidget[][]) {
 }
 
 export function compactWidget(widgets: Widgets, columns: number) {
-  const stortedWidgets = sortLayoutItemsByRowCol(widgets);
-  const columnsWidgets: Array<TcompactWidget[]> = Array.from(
+  const sortedWidgets = sortLayoutItemsByRowCol(widgets);
+  const columnsWidgets: Array<TCompactWidget[]> = Array.from(
     new Array(columns),
     () => []
   );
   // memory created object copy
   const widgetMap = new Map();
-  stortedWidgets.forEach((widget) => {
+  sortedWidgets.forEach((widget) => {
     const columnScope = widget.left + widget.width;
     for (
       let columnIndex = widget.left;
@@ -195,10 +195,15 @@ export function compactWidget(widgets: Widgets, columns: number) {
   // we don't want to calculate two
   // referenced pass and top has been changed in palce
   calculateTopLayout(columnsWidgets);
-  calculateTopLayout(columnsWidgets.reverse());
+  columnsWidgets.reverse();
+  calculateTopLayout(columnsWidgets);
   return Array.from(new Set(columnsWidgets.flat(2)));
 }
 
 export function getSnapToPlace(PlacedWidgets: Widgets) {
   return PlacedWidgets.find((w) => w.name === "snap") || { top: 0, left: 0 };
+}
+
+export function copyWidgets(widgets:Widgets):Widgets{
+  return Array.from(widgets,item=>({...item}));
 }
