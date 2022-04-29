@@ -68,6 +68,7 @@ export interface DropTargetColumnsReturn {
 }
 
 export type MediaColumns = 1 | 2 | 3;
+export type MediaColumnIndex = 0 | 1 | 2;
 
 export function useDropTargetColumns(): DropTargetColumnsReturn {
   const { media } = useMediaQuery(MEDIA_QUERIES);

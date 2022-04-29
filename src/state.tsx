@@ -1,11 +1,12 @@
-import { MediaColumns } from "./hooks/useMediaQuery";
+import { MediaColumnIndex, MediaColumns } from "./hooks/useMediaQuery";
+
 import { WeatherApp } from "./WeatherApp";
 import { proxy } from "valtio";
 
 export const HEIGHT_COEFFICIENT = 10;
 
 export interface Widget extends CarouselWidget {
-  left: number;
+  left: MediaColumnIndex;
   top: number;
   moved?: boolean;
   isDragging?: boolean;

@@ -1,11 +1,11 @@
 import { CSSProperties, ReactNode, useLayoutEffect, useRef } from "react";
-import { carouselWidgets, layout, widgets } from "./state";
+import { MediaColumnIndex, MediaColumns } from "./hooks/useMediaQuery";
+import { Widget, carouselWidgets, layout, widgets } from "./state";
 
 import { ItemTypes } from "./ItemTypes";
-import { MediaColumns } from "./hooks/useMediaQuery";
 import type { Widgets } from "./state";
 import type { XYCoord } from "react-dnd";
-import { compactWidget } from "./utils/utlis";
+import { compactWidget } from "./utils/utils";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import { useDrop } from "react-dnd";
 import { useSnapshot } from "valtio";
@@ -63,25 +63,24 @@ export default function Container({
         const { x, y } = monitor.getSourceClientOffset() as XYCoord;
         let left = x;
         let top = y - containerOffsetTop + (window.scrollY + 0);
-        if (snapToGrid) {
-          // console.log("Container triggers snapToGrid()");
-          [left, top] = doSnapToGrid({
-            x: left,
-            y: top,
-            columns: layoutSnap.columns,
-          });
-        }
+        // console.log("Container triggers snapToGrid()");
+        const [snappedX, snappedY] = doSnapToGrid({
+          x: left,
+          y: top,
+          columns: layoutSnap.columns,
+          containerWidth: layoutSnap.dropTargetWidth,
+          itemWidth: item.width,
+        });
         const itemType = monitor.getItemType();
-        let newWidgets: Widgets = [];
+        let moveWidgets: Widget[] = [];
         if (itemType === ItemTypes.WIDGET) {
-          const moveWidgets = Array.from(widgetSnap, (item) => ({ ...item }));
+          // create a local clone of widgets that has no connections to proxies in snapshot
+          moveWidgets = Array.from(widgetSnap, (item) => ({ ...item }));
           const index = moveWidgets.findIndex(
             (widget) => widget.name === item.name
           );
-          const cW = { ...moveWidgets[index], top: top - 1, left };
-          moveWidgets.splice(index, 1);
-          moveWidgets.push(cW);
-          newWidgets = moveWidgets;
+          moveWidgets[index].top = snappedY;
+          moveWidgets[index].left = snappedX;
         }
 
         if (itemType === ItemTypes.WIDGET_THUMBNAIL) {
@@ -89,14 +88,17 @@ export default function Container({
             (widget) => widget.name === item.name
           );
           const [carouselWidget] = carouselWidgets.splice(index, 1);
-          const cW = { ...carouselWidget, top, left };
-          const moveWidgets = [
+          const cW = { ...carouselWidget, top: snappedY, left: snappedX };
+          moveWidgets = [
             ...Array.from(widgetSnap, (item) => ({ ...item })),
             cW,
           ];
-          newWidgets = moveWidgets;
         }
-        widgets.splice(0, widgetSnap.length, ...compactWidget(newWidgets, 3));
+        widgets.splice(
+          0,
+          widgetSnap.length,
+          ...compactWidget(moveWidgets, layoutSnap.columns)
+        );
       },
       collect(monitor) {
         return { isOver: !!monitor.isOver(), canDrop: !!monitor.canDrop() };

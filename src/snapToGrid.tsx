@@ -1,30 +1,34 @@
+import { MediaColumnIndex, MediaColumns } from "./hooks/useMediaQuery";
+
 import { HEIGHT_COEFFICIENT } from "./state";
-import { MediaColumns } from "./hooks/useMediaQuery";
+
 export interface SnapToGridProps {
   x: number;
   y: number;
   columns: MediaColumns;
+  containerWidth: number;
+  itemWidth: MediaColumns;
 }
 
 export function snapToGrid({
   x,
   y,
   columns,
-}: SnapToGridProps): [number, number] {
-  const windowWidth = window.innerWidth;
+  containerWidth,
+  itemWidth,
+}: SnapToGridProps): [MediaColumnIndex, number] {
   let snappedX;
-  // !important need to fix the width unit since we should use
   //drop target's width but not windows'
-  const midPoint = Math.floor(windowWidth / columns);
+  const columnPixelWidth = Math.floor(containerWidth / columns);
   switch (columns) {
     case 1:
       snappedX = 0;
       break;
     case 2:
-      snappedX = x < midPoint ? 0 : midPoint;
+      snappedX = x < columnPixelWidth ? 0 : columnPixelWidth;
       break;
     case 3:
-      const columnOneEnd = Math.round(windowWidth / columns);
+      const columnOneEnd = Math.round(containerWidth / columns);
       const columnTwoEnd = 2 * columnOneEnd;
       snappedX =
         x < columnOneEnd ? 0 : x < columnTwoEnd ? columnOneEnd : columnTwoEnd;
@@ -34,7 +38,9 @@ export function snapToGrid({
   }
 
   const snappedY = Math.floor(y / HEIGHT_COEFFICIENT);
-  snappedX = Math.floor(snappedX / midPoint);
-  // console.log({ snappedX, snappedY });
-  return [snappedX, snappedY];
+  snappedX = Math.floor(snappedX / columnPixelWidth);
+
+  snappedX = itemWidth + snappedX > columns ? columns - itemWidth : snappedX;
+
+  return [snappedX as MediaColumnIndex, snappedY];
 }

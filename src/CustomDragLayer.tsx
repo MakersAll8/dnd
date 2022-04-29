@@ -7,7 +7,7 @@ import {
   layout,
   widgets,
 } from "./state";
-import { compactWidget, getSnapToPlace } from "./utils/utlis";
+import { compactWidget, getSnapToPlace } from "./utils/utils";
 
 import { ItemTypes } from "./ItemTypes";
 import { MediaColumns } from "./hooks/useMediaQuery";
@@ -54,13 +54,6 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
 
     let { x, y } = currentOffset;
 
-    // if (isSnapToGrid) {
-    //   console.log(
-    //     "CustomDragLayer.getItemStyles triggers snapToGrid() for final drop position"
-    //   );
-    //   [x, y] = snapToGrid({ x, y, columns });
-    // }
-
     const transform = `translate(${x}px, ${
       y - (dashboardRef.current?.offsetTop || 0) + (window.scrollY || 0)
     }px)`;
@@ -84,6 +77,10 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
   const layoutSnap = useSnapshot(layout);
   const widgetsSnap = useSnapshot(widgets);
   const columnWidth = layoutSnap.getColumnWidth();
+  if (!isDragging) {
+    return null;
+  }
+
   // initialOffset and currentOffset are relative to the entire document flow
   const [left, top] = snapToGrid({
     x: currentOffset?.x || 0,
@@ -91,9 +88,9 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
       currentOffset?.y ||
       0 - (dashboardRef.current?.offsetTop || 0) + (window.scrollY || 0),
     columns: layoutSnap.columns,
+    containerWidth: layoutSnap.dropTargetWidth,
+    itemWidth: item.width,
   });
-
-  // console.log(`left: ${left} top: ${top}`);
 
   function renderItem() {
     switch (itemType) {
@@ -108,19 +105,6 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
       default:
         return null;
     }
-  }
-
-  useMemo(() => {
-    const draggingItemIndex =
-      item && widgetsSnap.findIndex((x) => x.name === item.name);
-    if (draggingItemIndex !== -1 && draggingItemIndex !== null) {
-      const draggingItem = widgets[draggingItemIndex];
-      Object.assign(currentDraggingWidget, draggingItem, { left, top });
-    }
-  }, [item, widgetsSnap, left, top]);
-
-  if (!isDragging) {
-    return null;
   }
 
   //console.log(currentDraggingWidgetSnap);
