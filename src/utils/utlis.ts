@@ -1,4 +1,7 @@
 import type { Widget, Widgets } from "../state";
+
+import { MediaColumns } from "./hooks/useMediaQuery";
+
 const DEBUG = false;
 function log(message: string) {
   if (!DEBUG) return;
@@ -206,4 +209,39 @@ export function getSnapToPlace(PlacedWidgets: Widgets) {
 
 export function copyWidgets(widgets:Widgets):Widgets{
   return Array.from(widgets,item=>({...item}));
+}
+
+export function isOverFlow(left:number,width:number,columnsNumber:number):boolean{
+  return left+width>columnsNumber;
+}
+
+export function truncateWidget(widget: Widget, columns: number) {
+    widget.width = columns - widget.left as MediaColumns;
+}
+
+export function sortInOneColumn(widgets:Widgets){
+  widgets.forEach(
+    widget=>{
+      widget.left=0
+    }
+  );
+  const sortedWidgets = sortLayoutItemsByRowCol(widgets);
+  const layoutWidgets = compactWidget(sortedWidgets,1);
+  return layoutWidgets;
+}
+
+export function sortInTwoColumn(widgets:Widgets){
+  widgets.forEach(
+    widget=>{
+      if(widget.left===3){
+        widget.left=0
+      }
+      if(isOverFlow(widget.left,widget.width,2)){
+        truncateWidget(widget,2);
+      }
+    }
+  );
+  const sortedWidgets = sortLayoutItemsByRowCol(widgets);
+  const layoutWidgets = compactWidget(sortedWidgets,2);
+  return layoutWidgets;
 }
