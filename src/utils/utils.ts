@@ -73,7 +73,7 @@ export function compactWidget(widgets: Widgets, columns: MediaColumns) {
   });
   // TODO: need to improve the time complexity,
   // we don't want to calculate two
-  // referenced pass and top has been changed in palce
+  // referenced pass and top has been changed in place
   calculateTopLayout(columnsWidgets);
   calculateTopLayout(columnsWidgets.reverse());
   return Array.from(new Set(columnsWidgets.flat(2)));

@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode, useRef } from "react";
 import { carouselWidgets, widgets } from "./state";
-import { compactWidget, copyWidgets } from "./utils/utlis";
+import { compactWidget, copyWidgets } from "./utils/utils";
 
 import { ItemTypes } from "./ItemTypes";
 import { useDrop } from "react-dnd";
@@ -30,7 +30,7 @@ export function Carousel({ children }: ContainerProps): JSX.Element {
         );
         const { width, height, name, children } = widgetsSnap[dragItemIndex];
         carouselWidgets.push({ name, width, height, children });
-        const copyWidget =  copyWidgets(widgetsSnap);
+        const copyWidget = copyWidgets(widgetsSnap);
         copyWidget.splice(dragItemIndex, 1);
         widgets.splice(0, widgets.length, ...compactWidget(copyWidget, 3));
       },
