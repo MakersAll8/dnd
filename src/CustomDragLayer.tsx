@@ -7,7 +7,7 @@ import {
   layout,
   widgets,
 } from "./state";
-import { compactWidget, getSnapToPlace } from "./utils/utils";
+import { compactWidget, copyWidgets, getSnapToPlace } from "./utils/utils";
 
 import { ItemTypes } from "./ItemTypes";
 import { MediaColumns } from "./hooks/useMediaQuery";
@@ -118,29 +118,18 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
   };
 
   // we need to calculate the right place position of the snap
-  let newWidgetsSnap = Array.from(widgetsSnap, (_item) => ({ ..._item }));
+  let newWidgetsSnap = copyWidgets(widgetsSnap);
   const oldWidget = newWidgetsSnap.find((_item) => _item.name === item.name);
   newWidgetsSnap = newWidgetsSnap.filter((_item) => _item.name !== item.name);
   newWidgetsSnap.push(_snapWidgetDim);
   newWidgetsSnap = compactWidget(newWidgetsSnap, 3);
   const { left: _left, top: _top } = getSnapToPlace(newWidgetsSnap);
-  //console.log(newWidgetsSnap, item.name);
-
   const { name, left: oldLeft, top: oldTop } = currentDraggingItemName.current;
-  if (
-    oldWidget &&
-    (name !== item.name || oldLeft !== _left || oldTop !== _top)
-  ) {
-    const newWidgetList = [
-      ...newWidgetsSnap.filter((i) => i.name !== "snap"),
-      oldWidget,
-    ];
-    // console.log({
-    //   oldLeft,
-    //   _left,
-    //   oldTop,
-    //   top,
-    // });
+  if (name !== item.name || oldLeft !== _left || oldTop !== _top) {
+    const newWidgetList = newWidgetsSnap.filter((i) => i.name !== "snap");
+    if (oldWidget) {
+      newWidgetList.push(oldWidget);
+    }
     currentDraggingItemName.current = {
       name: item.name,
       left: _left,

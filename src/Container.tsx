@@ -1,11 +1,11 @@
 import { CSSProperties, ReactNode, useLayoutEffect, useRef } from "react";
 import { MediaColumnIndex, MediaColumns } from "./hooks/useMediaQuery";
 import { Widget, carouselWidgets, layout, widgets } from "./state";
+import { compactWidget, copyWidgets } from "./utils/utils";
 
 import { ItemTypes } from "./ItemTypes";
 import type { Widgets } from "./state";
 import type { XYCoord } from "react-dnd";
-import { compactWidget } from "./utils/utils";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import { useDrop } from "react-dnd";
 import { useSnapshot } from "valtio";
@@ -74,8 +74,7 @@ export default function Container({
         const itemType = monitor.getItemType();
         let moveWidgets: Widget[] = [];
         if (itemType === ItemTypes.WIDGET) {
-          // create a local clone of widgets that has no connections to proxies in snapshot
-          moveWidgets = Array.from(widgetSnap, (item) => ({ ...item }));
+          const moveWidgets = copyWidgets(widgetSnap);
           const index = moveWidgets.findIndex(
             (widget) => widget.name === item.name
           );
