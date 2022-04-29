@@ -1,6 +1,7 @@
 import type { Widget, Widgets } from "../state";
 
-import { MediaColumns } from "./hooks/useMediaQuery";
+import { MediaColumns } from "../hooks/useMediaQuery";
+import { off } from "process";
 
 const DEBUG = false;
 function log(message: string) {
@@ -73,12 +74,10 @@ export function moveElement(
   widget.moved = true;
 
   let sorted = sortLayoutItemsByRowCol(widgets);
-  // console.log({ sorted });
   const movingUp = oldTop >= Number(top);
   if (movingUp) sorted = sorted.reverse();
   const collisions = getAllCollisions(sorted, widget);
   const hasCollisions = collisions.length > 0;
-  // console.log({ sorted, collisions, hasCollisions, widget, widgets });
 
   if (hasCollisions) {
     widget.left = oldLeft;
@@ -170,7 +169,7 @@ function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
   });
 }
 
-export function compactWidget(widgets: Widgets, columns: number) {
+function calculateTopDistance(widgets: Widgets, columns: number){
   const sortedWidgets = sortLayoutItemsByRowCol(widgets);
   const columnsWidgets: Array<TCompactWidget[]> = Array.from(
     new Array(columns),
@@ -203,6 +202,16 @@ export function compactWidget(widgets: Widgets, columns: number) {
   return Array.from(new Set(columnsWidgets.flat(2)));
 }
 
+export function compactWidget(widgets: Widgets, columns: number) {
+  if(columns===3)
+    return calculateTopDistance(widgets, columns);
+  else if(columns===2){
+    return sortInTwoColumn(widgets);
+  }else{
+    return sortInOneColumn(widgets);
+  }
+}
+
 export function getSnapToPlace(PlacedWidgets: Widgets) {
   return PlacedWidgets.find((w) => w.name === "snap") || { top: 0, left: 0 };
 }
@@ -226,7 +235,7 @@ export function sortInOneColumn(widgets:Widgets){
     }
   );
   const sortedWidgets = sortLayoutItemsByRowCol(widgets);
-  const layoutWidgets = compactWidget(sortedWidgets,1);
+  const layoutWidgets = calculateTopDistance(sortedWidgets,1);
   return layoutWidgets;
 }
 
@@ -242,6 +251,6 @@ export function sortInTwoColumn(widgets:Widgets){
     }
   );
   const sortedWidgets = sortLayoutItemsByRowCol(widgets);
-  const layoutWidgets = compactWidget(sortedWidgets,2);
+  const layoutWidgets = calculateTopDistance(sortedWidgets,2);
   return layoutWidgets;
 }

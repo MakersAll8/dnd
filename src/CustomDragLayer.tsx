@@ -117,7 +117,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
   const oldWidget = newWidgetsSnap.find((_item) => _item.name === item.name);
   newWidgetsSnap = newWidgetsSnap.filter((_item) => _item.name !== item.name);
   newWidgetsSnap.push(_snapWidgetDim);
-  newWidgetsSnap = compactWidget(newWidgetsSnap, 3);
+  newWidgetsSnap = compactWidget(newWidgetsSnap, layoutSnap.columns);
   const { left: _left, top: _top } = getSnapToPlace(newWidgetsSnap);
   const { name, left: oldLeft, top: oldTop } = currentDraggingItemName.current;
   if (

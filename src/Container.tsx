@@ -95,7 +95,7 @@ export default function Container({
           ];
           newWidgets = moveWidgets;
         }
-        widgets.splice(0, widgetSnap.length, ...compactWidget(newWidgets, 3));
+        widgets.splice(0, widgetSnap.length, ...compactWidget(newWidgets, layoutSnap.columns));
       },
       collect(monitor) {
         return { isOver: !!monitor.isOver(), canDrop: !!monitor.canDrop() };
