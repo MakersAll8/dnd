@@ -149,10 +149,10 @@ interface TCompactWidget extends Widget {
   computed?: boolean;
 }
 
-function calculateTopLayout(stortedWidgets: TCompactWidget[][]) {
-  stortedWidgets.forEach((columnWdiget) => {
+function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
+  sortedWidgets.forEach((columnWidget) => {
     let initialTop = 0;
-    columnWdiget.forEach((item, index, array) => {
+    columnWidget.forEach((item, index, array) => {
       if (index === 0 && !item.computed) {
         item.top = initialTop;
       } else if (index !== 0) {
@@ -193,7 +193,7 @@ export function compactWidget(widgets: Widgets, columns: number) {
   });
   // TODO: need to improve the time complexity,
   // we don't want to calculate two
-  // referenced pass and top has been changed in palce
+  // referenced pass and top has been changed in place
   calculateTopLayout(columnsWidgets);
   columnsWidgets.reverse();
   calculateTopLayout(columnsWidgets);

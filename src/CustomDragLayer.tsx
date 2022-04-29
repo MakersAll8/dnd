@@ -1,9 +1,8 @@
-import { CSSProperties, FC, RefObject, useMemo, useRef } from "react";
+import { CSSProperties, FC, RefObject, useRef } from "react";
 import {
   CarouselWidget,
   HEIGHT_COEFFICIENT,
   Widget,
-  currentDraggingWidget,
   layout,
   widgets,
 } from "./state";
@@ -53,13 +52,6 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
     }
 
     let { x, y } = currentOffset;
-
-    // if (isSnapToGrid) {
-    //   console.log(
-    //     "CustomDragLayer.getItemStyles triggers snapToGrid() for final drop position"
-    //   );
-    //   [x, y] = snapToGrid({ x, y, columns });
-    // }
 
     const transform = `translate(${x}px, ${
       y - (dashboardRef.current?.offsetTop || 0) + (window.scrollY || 0)
