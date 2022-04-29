@@ -1,11 +1,11 @@
 import { CSSProperties, ReactNode, useLayoutEffect, useRef } from "react";
 import { carouselWidgets, layout, widgets } from "./state";
-import { compactWidget, moveElement } from "./utils/utlis";
 
 import { ItemTypes } from "./ItemTypes";
 import { MediaColumns } from "./hooks/useMediaQuery";
 import type { Widgets } from "./state";
 import type { XYCoord } from "react-dnd";
+import { compactWidget } from "./utils/utlis";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import { useDrop } from "react-dnd";
 import { useSnapshot } from "valtio";
