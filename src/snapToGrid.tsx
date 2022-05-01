@@ -18,7 +18,6 @@ export function snapToGrid({
   itemWidth,
 }: SnapToGridProps): [MediaColumnIndex, number] {
   let snappedX;
-  //drop target's width but not windows'
   const columnPixelWidth = Math.floor(containerWidth / columns);
   switch (columns) {
     case 1:

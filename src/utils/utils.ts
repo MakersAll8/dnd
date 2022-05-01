@@ -35,10 +35,14 @@ function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
     columnWidget.forEach((item, index, array) => {
       if (index === 0 && !item.computed) {
         item.top = initialTop;
-      } else if (index !== 0) {
+        return;
+      }
+
+      if (index !== 0) {
         const requiredTop = array[index - 1].top + array[index - 1].height + 1;
-        if (item.computed) item.top = Math.max(requiredTop, item.top);
-        else {
+        if (item.computed) {
+          item.top = Math.max(requiredTop, item.top);
+        } else {
           item.top = requiredTop;
         }
         item.computed = true;
@@ -47,7 +51,7 @@ function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
   });
 }
 
-export function compactWidget(widgets: Widgets, columns: MediaColumns) {
+export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
   const sortedWidgets = sortLayoutItemsByRowCol(widgets);
   const columnsWidgets: Array<TCompactWidget[]> = Array.from(
     new Array(columns),
@@ -55,6 +59,7 @@ export function compactWidget(widgets: Widgets, columns: MediaColumns) {
   );
   // memory created object copy
   const widgetMap = new Map();
+
   sortedWidgets.forEach((widget) => {
     const columnScope = widget.left + widget.width;
     for (
@@ -79,10 +84,54 @@ export function compactWidget(widgets: Widgets, columns: MediaColumns) {
   return Array.from(new Set(columnsWidgets.flat(2)));
 }
 
+export function compactWidget(widgets: Widgets, columns: number) {
+  if (columns === 3) return calculateTopDistance(widgets, columns);
+  else if (columns === 2) {
+    return sortInTwoColumn(widgets);
+  } else {
+    return sortInOneColumn(widgets);
+  }
+}
+
 export function getSnapToPlace(PlacedWidgets: Widgets) {
   return PlacedWidgets.find((w) => w.name === "snap") || { top: 0, left: 0 };
 }
 
 export function copyWidgets(widgets: Widgets): Widgets {
   return Array.from(widgets, (item) => ({ ...item }));
+}
+
+export function isOverFlow(
+  left: number,
+  width: number,
+  columnsNumber: number
+): boolean {
+  return left + width > columnsNumber;
+}
+
+export function truncateWidget(widget: Widget, columns: number) {
+  widget.width = (columns - widget.left) as MediaColumns;
+}
+
+export function sortInOneColumn(widgets: Widgets) {
+  widgets.forEach((widget) => {
+    widget.left = 0;
+  });
+  const sortedWidgets = sortLayoutItemsByRowCol(widgets);
+  const layoutWidgets = calculateTopDistance(sortedWidgets, 1);
+  return layoutWidgets;
+}
+
+export function sortInTwoColumn(widgets: Widgets) {
+  widgets.forEach((widget) => {
+    // if (widget.left === 3) {
+    //   widget.left = 0;
+    // }
+    if (isOverFlow(widget.left, widget.width, 2)) {
+      truncateWidget(widget, 2);
+    }
+  });
+  const sortedWidgets = sortLayoutItemsByRowCol(widgets);
+  const layoutWidgets = calculateTopDistance(sortedWidgets, 2);
+  return layoutWidgets;
 }
