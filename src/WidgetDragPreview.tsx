@@ -8,7 +8,6 @@ import { useSnapshot } from "valtio";
 export interface WidgetDragPreviewProps {
   name: string;
   children?: () => JSX.Element;
-  shadowPosition: { left: number; top: number };
   height: number;
   width: MediaColumns;
 }

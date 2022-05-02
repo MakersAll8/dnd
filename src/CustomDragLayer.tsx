@@ -78,8 +78,9 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   const [left, top] = snapToGrid({
     x: currentOffset?.x || 0,
     y:
-      currentOffset?.y ||
-      0 - (dashboardRef.current?.offsetTop || 0) + (window.scrollY || 0),
+      (currentOffset?.y || 0) -
+      (dashboardRef.current?.offsetTop || 0) +
+      (window.scrollY || 0),
     columns: layoutSnap.columns,
     containerWidth: layoutSnap.dropTargetWidth,
     itemWidth: item.width,
@@ -88,11 +89,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   function renderItem() {
     switch (itemType) {
       case ItemTypes.WIDGET:
-        return (
-          <WidgetDragPreview {...item} shadowPosition={{ left, top }}>
-            {item.children}
-          </WidgetDragPreview>
-        );
+        return <WidgetDragPreview {...item}>{item.children}</WidgetDragPreview>;
       case ItemTypes.WIDGET_THUMBNAIL:
         return <WidgetThumbnail {...item}>{item.children}</WidgetThumbnail>;
       default:
@@ -116,8 +113,10 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   newWidgetsSnap = newWidgetsSnap.filter((_item) => _item.name !== item.name);
   newWidgetsSnap.push(_snapWidgetDim);
   newWidgetsSnap = compactWidget(newWidgetsSnap, layoutSnap.columns);
+  // console.log({ newWidgetsSnap });
   const { left: _left, top: _top } = getSnapToPlace(newWidgetsSnap);
   const { name, left: oldLeft, top: oldTop } = currentDraggingItemName.current;
+
   if (name !== item.name || oldLeft !== _left || oldTop !== _top) {
     const newWidgetList = newWidgetsSnap.filter((i) => i.name !== "snap");
     if (oldWidget) {
@@ -131,7 +130,6 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
     widgets.splice(0, widgets.length, ...newWidgetList);
   }
 
-  const isCollision = false;
   const snapWidgetDim = {
     name: "snap",
     left: _left * layoutSnap.getColumnWidth(),
@@ -139,10 +137,11 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
     height: item.height * HEIGHT_COEFFICIENT,
     width: Math.min(layoutSnap.columns, item.width) * columnWidth,
   };
+
   return (
     <>
       <div style={layerStyles}>
-        {!isCollision && left >= 0 && top >= 0 && (
+        {left >= 0 && top >= 0 && (
           <div
             style={{
               backgroundColor: "gray",

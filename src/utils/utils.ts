@@ -88,6 +88,8 @@ export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
   // we don't want to calculate two
   // referenced pass and top has been changed in place
   calculateTopLayout(columnsWidgets);
+  // to avoid birthday today snapping to where it should not
+  // see /note/reverse.png
   calculateTopLayout(columnsWidgets.reverse());
   // flatten an array of array to an array
   const flatten = columnsWidgets.flat(1);

@@ -60,7 +60,8 @@ export default function Container({
         const { x, y } = monitor.getSourceClientOffset() as XYCoord;
         let left = x;
         let top = y - containerOffsetTop + (window.scrollY + 0);
-        // console.log("Container triggers snapToGrid()");
+        console.log(window.scrollY + 0);
+
         const [snappedX, snappedY] = doSnapToGrid({
           x: left,
           y: top,
@@ -68,6 +69,7 @@ export default function Container({
           containerWidth: layoutSnap.dropTargetWidth,
           itemWidth: item.width,
         });
+
         const itemType = monitor.getItemType();
         let moveWidgets: Widget[] = [];
         if (itemType === ItemTypes.WIDGET) {
@@ -88,11 +90,9 @@ export default function Container({
           moveWidgets = [...deepCopyWidgets(widgetSnap), cW];
         }
 
-        widgets.splice(
-          0,
-          widgetSnap.length,
-          ...compactWidget(moveWidgets, layoutSnap.columns)
-        );
+        const compactResult = compactWidget(moveWidgets, layoutSnap.columns);
+        // console.log({ compactResult });
+        widgets.splice(0, widgetSnap.length, ...compactResult);
       },
       collect(monitor) {
         return { isOver: !!monitor.isOver(), canDrop: !!monitor.canDrop() };

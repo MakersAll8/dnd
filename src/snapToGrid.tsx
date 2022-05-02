@@ -24,13 +24,17 @@ export function snapToGrid({
       snappedX = 0;
       break;
     case 2:
-      snappedX = x < columnPixelWidth ? 0 : columnPixelWidth;
+      snappedX = x < columnPixelWidth / 2 ? 0 : columnPixelWidth;
       break;
     case 3:
-      const columnOneEnd = Math.round(containerWidth / columns);
+      const columnOneEnd = columnPixelWidth;
       const columnTwoEnd = 2 * columnOneEnd;
       snappedX =
-        x < columnOneEnd ? 0 : x < columnTwoEnd ? columnOneEnd : columnTwoEnd;
+        x < columnOneEnd / 2
+          ? 0
+          : x < columnTwoEnd - columnOneEnd / 2
+          ? columnOneEnd
+          : columnTwoEnd;
       break;
     default:
       snappedX = 0;
