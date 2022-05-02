@@ -13,9 +13,12 @@ export interface WidgetThumbnailProps {
 }
 export const WidgetThumbnail: FC<WidgetThumbnailProps> = memo(
   function WidgetThumbnail({ name, width, height, children }) {
-    const [, drag, preview] = useDrag(() => ({
+    const [{ isDragging }, drag, preview] = useDrag(() => ({
       type: ItemTypes.WIDGET_THUMBNAIL,
       item: { name, width, height, children },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
     }));
     // hide default preview provided by DOM dnd api
     useEffect(() => {
@@ -29,6 +32,7 @@ export const WidgetThumbnail: FC<WidgetThumbnailProps> = memo(
           height: "85px",
           border: "2px solid grey",
           borderRadius: "5px",
+          background: "lightblue",
           cursor: "move",
           display: "flex",
           justifyContent: "center",

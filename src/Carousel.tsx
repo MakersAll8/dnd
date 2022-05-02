@@ -8,6 +8,7 @@ import { useSnapshot } from "valtio";
 
 interface ContainerProps {
   children?: ReactNode;
+  edit: boolean;
 }
 
 interface DragWidget {
@@ -17,7 +18,7 @@ interface DragWidget {
   left: number;
 }
 
-export function Carousel({ children }: ContainerProps): JSX.Element {
+export function Carousel({ children, edit }: ContainerProps): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetsSnap = useSnapshot(widgets);
   const layoutSnap = useSnapshot(layout);
@@ -55,7 +56,10 @@ export function Carousel({ children }: ContainerProps): JSX.Element {
     position: "relative",
   };
   return (
-    <div ref={containerRef} style={{ height: "150px" }}>
+    <div
+      ref={containerRef}
+      style={{ height: edit ? "150px" : "0px", transition: "height 0.5s" }}
+    >
       <div ref={drop} style={{ ...styles }}>
         {children}
       </div>

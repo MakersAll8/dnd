@@ -32,25 +32,23 @@ export default function WidgetBoard({
         >
           {edit ? "Collapse" : "Show carousel"}
         </button>
-        {edit && (
-          <Carousel>
-            <div style={{ display: "flex", gap: "8px", padding: "8px" }}>
-              {carouselWidgets.map((widget) => {
-                const { name, children, width, height } = widget;
-                return (
-                  <WidgetThumbnail
-                    key={name}
-                    name={name}
-                    width={width}
-                    height={height}
-                  >
-                    {children}
-                  </WidgetThumbnail>
-                );
-              })}
-            </div>
-          </Carousel>
-        )}
+        <Carousel edit={edit}>
+          <div style={{ display: "flex", gap: "8px", padding: "8px" }}>
+            {carouselWidgets.map((widget) => {
+              const { name, children, width, height } = widget;
+              return (
+                <WidgetThumbnail
+                  key={name}
+                  name={name}
+                  width={width}
+                  height={height}
+                >
+                  {children}
+                </WidgetThumbnail>
+              );
+            })}
+          </div>
+        </Carousel>
 
         <div ref={dashboardRef} style={{ flexGrow: 1, position: "relative" }}>
           <Container title="Widgets">
