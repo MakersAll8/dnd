@@ -24,7 +24,16 @@ export const WidgetThumbnail: FC<WidgetThumbnailProps> = memo(
     return (
       <div
         ref={(node) => drag(node)}
-        style={{ width: "200px", border: "1px solid black", cursor: "move" }}
+        style={{
+          width: "170px",
+          height: "85px",
+          border: "2px solid grey",
+          borderRadius: "5px",
+          cursor: "move",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         {name}
       </div>

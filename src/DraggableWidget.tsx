@@ -40,7 +40,8 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
         // because IE will ignore our custom "empty image" drag preview.
         opacity: isDragging ? 0 : 1,
         height: height * HEIGHT_COEFFICIENT,
-        width: Math.min(layoutSnap.columns, width) * columnWidth,
+        width: Math.min(layoutSnap.columns, width) * columnWidth - 20,
+        margin: "10px",
         borderRadius: "8px",
       };
     }

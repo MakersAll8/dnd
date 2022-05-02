@@ -34,7 +34,7 @@ export default function WidgetBoard({
         </button>
         {edit && (
           <Carousel>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", padding: "8px" }}>
               {carouselWidgets.map((widget) => {
                 const { name, children, width, height } = widget;
                 return (
