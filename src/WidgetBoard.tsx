@@ -53,7 +53,7 @@ export default function WidgetBoard({
         )}
 
         <div ref={dashboardRef} style={{ flexGrow: 1, position: "relative" }}>
-          <Container title="Widgets" snapToGrid={true}>
+          <Container title="Widgets">
             {widgets.map((availableWidget) => {
               const { name, top, left, children, height, width } =
                 availableWidget;

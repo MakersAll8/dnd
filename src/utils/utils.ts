@@ -137,10 +137,8 @@ export function sortInOneColumn(widgets: Widgets) {
 }
 
 export function sortInTwoColumn(widgets: Widgets) {
+  // a three-column widget can only be two-column wide in a two-column layout
   widgets.forEach((widget) => {
-    // if (widget.left === 3) {
-    //   widget.left = 0;
-    // }
     if (isOverFlow(widget.left, widget.width, 2)) {
       truncateWidget(widget, 2);
     }

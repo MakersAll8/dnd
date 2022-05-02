@@ -12,7 +12,6 @@ import { useSnapshot } from "valtio";
 interface ContainerProps {
   children?: ReactNode;
   title: string;
-  snapToGrid?: boolean;
 }
 
 interface DragWidget {
@@ -27,7 +26,6 @@ interface DragWidget {
 export default function Container({
   children,
   title,
-  snapToGrid,
 }: ContainerProps): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetSnap = useSnapshot(widgets);

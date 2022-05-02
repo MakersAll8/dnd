@@ -29,21 +29,15 @@ const layerStyles: CSSProperties = {
 };
 
 export interface CustomDragLayerProps {
-  snapToGrid?: boolean;
   dashboardRef: RefObject<HTMLDivElement>;
 }
 
 // drag layer draws over drop target and return a custom drag preview to
 // replace default drag preview provided by DOM dnd api.
-export const CustomDragLayer: FC<CustomDragLayerProps> = ({
-  dashboardRef,
-  snapToGrid: snapToGridProp,
-}) => {
+export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   function getItemStyles(
     initialOffset: XYCoord | null,
-    currentOffset: XYCoord | null,
-    isSnapToGrid: boolean,
-    columns: number
+    currentOffset: XYCoord | null
   ) {
     if (!initialOffset || !currentOffset) {
       return {
@@ -159,14 +153,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
             snap to
           </div>
         )}
-        <div
-          style={getItemStyles(
-            initialOffset,
-            currentOffset,
-            snapToGridProp || false,
-            layout.columns
-          )}
-        >
+        <div style={getItemStyles(initialOffset, currentOffset)}>
           {renderItem()}
         </div>
       </div>
