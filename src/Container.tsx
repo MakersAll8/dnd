@@ -43,7 +43,6 @@ export default function Container({
         [...deepCopyWidgets(widgetSnap)],
         layoutSnap.columns
       );
-      console.log({ compactResult });
       widgets.splice(0, widgetSnap.length, ...compactResult);
     };
     const ro = new ResizeObserver(updateContainerWidth);

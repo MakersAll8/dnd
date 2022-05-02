@@ -97,8 +97,6 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
     }
   }
 
-  //console.log(currentDraggingWidgetSnap);
-
   const _snapWidgetDim = {
     name: "snap",
     left: left,
@@ -113,7 +111,6 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   newWidgetsSnap = newWidgetsSnap.filter((_item) => _item.name !== item.name);
   newWidgetsSnap.push(_snapWidgetDim);
   newWidgetsSnap = compactWidget(newWidgetsSnap, layoutSnap.columns);
-  // console.log({ newWidgetsSnap });
   const { left: _left, top: _top } = getSnapToPlace(newWidgetsSnap);
   const { name, left: oldLeft, top: oldTop } = currentDraggingItemName.current;
 

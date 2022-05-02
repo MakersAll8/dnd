@@ -101,7 +101,6 @@ export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
 }
 
 export function compactWidget(widgets: Widgets, columns: MediaColumns) {
-  console.log({ widgets });
   if (columns === 3) return calculateTopDistance(widgets, columns);
   else if (columns === 2) {
     return sortInTwoColumn(widgets);
