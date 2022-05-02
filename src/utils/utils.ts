@@ -30,9 +30,10 @@ interface TCompactWidget extends Widget {
 }
 
 function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
-  sortedWidgets.forEach((columnWidget) => {
+  sortedWidgets.forEach((columnWidgets) => {
     let initialTop = 0;
-    columnWidget.forEach((item, index, array) => {
+    columnWidgets.forEach((item, index, array) => {
+      // widgets spanning multiple columns only need top calculated once
       if (index === 0 && !item.computed) {
         item.top = initialTop;
         return;
@@ -53,23 +54,30 @@ function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
 
 export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
   const sortedWidgets = sortLayoutItemsByRowCol(widgets);
+  // create a new array with only <columns> elements, making each element an empty array
   const columnsWidgets: Array<TCompactWidget[]> = Array.from(
     new Array(columns),
     () => []
   );
-  // memory created object copy
+  // storing as a map to hold reference to each widget
+  // this will be useful in calculateTopLayout when calculating top value
   const widgetMap = new Map();
 
   sortedWidgets.forEach((widget) => {
-    const columnScope = widget.left + widget.width;
+    const columnEndIndex = widget.left + widget.width;
+
+    // an invariant here is that snapToGrid() must have been called before reaching here
+    // snapToGrid() guarantees that columnEndIndex won't exceed total columns
+    // push a widget to columnsWidgets, starting from the left most column
     for (
       let columnIndex = widget.left;
-      columnIndex < columnScope;
+      columnIndex < columnEndIndex;
       columnIndex++
     ) {
       let newWidget: TCompactWidget;
-      if (widgetMap.has(widget.name)) newWidget = widgetMap.get(widget.name);
-      else {
+      if (widgetMap.has(widget.name)) {
+        newWidget = widgetMap.get(widget.name);
+      } else {
         newWidget = { ...widget, computed: false };
         widgetMap.set(widget.name, newWidget);
       }
@@ -81,10 +89,16 @@ export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
   // referenced pass and top has been changed in place
   calculateTopLayout(columnsWidgets);
   calculateTopLayout(columnsWidgets.reverse());
-  return Array.from(new Set(columnsWidgets.flat(2)));
+  // flatten an array of array to an array
+  const flatten = columnsWidgets.flat(1);
+  // convert to set to remove duplicates
+  const set = new Set(flatten);
+  // convert back to an array
+  const array = Array.from(set);
+  return array;
 }
 
-export function compactWidget(widgets: Widgets, columns: number) {
+export function compactWidget(widgets: Widgets, columns: MediaColumns) {
   if (columns === 3) return calculateTopDistance(widgets, columns);
   else if (columns === 2) {
     return sortInTwoColumn(widgets);
@@ -97,7 +111,7 @@ export function getSnapToPlace(PlacedWidgets: Widgets) {
   return PlacedWidgets.find((w) => w.name === "snap") || { top: 0, left: 0 };
 }
 
-export function copyWidgets(widgets: Widgets): Widgets {
+export function deepCopyWidgets(widgets: Widgets): Widgets {
   return Array.from(widgets, (item) => ({ ...item }));
 }
 

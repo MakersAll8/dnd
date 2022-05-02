@@ -1,7 +1,7 @@
 import { CSSProperties, ReactNode, useLayoutEffect, useRef } from "react";
 import { MediaColumnIndex, MediaColumns } from "./hooks/useMediaQuery";
 import { Widget, carouselWidgets, layout, widgets } from "./state";
-import { compactWidget, copyWidgets } from "./utils/utils";
+import { compactWidget, deepCopyWidgets } from "./utils/utils";
 
 import { ItemTypes } from "./ItemTypes";
 import type { XYCoord } from "react-dnd";
@@ -73,7 +73,7 @@ export default function Container({
         const itemType = monitor.getItemType();
         let moveWidgets: Widget[] = [];
         if (itemType === ItemTypes.WIDGET) {
-          moveWidgets = copyWidgets(widgetSnap);
+          moveWidgets = deepCopyWidgets(widgetSnap);
           const index = moveWidgets.findIndex(
             (widget) => widget.name === item.name
           );
@@ -87,7 +87,7 @@ export default function Container({
           );
           const [carouselWidget] = carouselWidgets.splice(index, 1);
           const cW = { ...carouselWidget, top: snappedY, left: snappedX };
-          moveWidgets = [...copyWidgets(widgetSnap), cW];
+          moveWidgets = [...deepCopyWidgets(widgetSnap), cW];
         }
 
         widgets.splice(

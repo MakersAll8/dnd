@@ -6,7 +6,7 @@ import {
   layout,
   widgets,
 } from "./state";
-import { compactWidget, copyWidgets, getSnapToPlace } from "./utils/utils";
+import { compactWidget, deepCopyWidgets, getSnapToPlace } from "./utils/utils";
 
 import { ItemTypes } from "./ItemTypes";
 import { MediaColumns } from "./hooks/useMediaQuery";
@@ -117,7 +117,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({
   };
 
   // we need to calculate the right place position of the snap
-  let newWidgetsSnap = copyWidgets(widgetsSnap);
+  let newWidgetsSnap = deepCopyWidgets(widgetsSnap);
   const oldWidget = newWidgetsSnap.find((_item) => _item.name === item.name);
   newWidgetsSnap = newWidgetsSnap.filter((_item) => _item.name !== item.name);
   newWidgetsSnap.push(_snapWidgetDim);

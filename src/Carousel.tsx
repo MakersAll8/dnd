@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode, useRef } from "react";
 import { carouselWidgets, layout, widgets } from "./state";
-import { compactWidget, copyWidgets } from "./utils/utils";
+import { compactWidget, deepCopyWidgets } from "./utils/utils";
 
 import { ItemTypes } from "./ItemTypes";
 import { useDrop } from "react-dnd";
@@ -31,8 +31,10 @@ export function Carousel({ children }: ContainerProps): JSX.Element {
         );
         const { width, height, name, children } = widgetsSnap[dragItemIndex];
         carouselWidgets.push({ name, width, height, children });
-        const copyWidget = copyWidgets(widgetsSnap);
+        const copyWidget = deepCopyWidgets(widgetsSnap);
+        // remove 1 element at dragItemIndex from copyWidget, mutating it.
         copyWidget.splice(dragItemIndex, 1);
+        // mutating widgets directly to trigger state update in valtio state.
         widgets.splice(
           0,
           widgets.length,
