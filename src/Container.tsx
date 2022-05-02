@@ -39,6 +39,12 @@ export default function Container({
         return;
       }
       layout.dropTargetWidth = containerRef.current.clientWidth;
+      const compactResult = compactWidget(
+        [...deepCopyWidgets(widgetSnap)],
+        layoutSnap.columns
+      );
+      console.log({ compactResult });
+      widgets.splice(0, widgetSnap.length, ...compactResult);
     };
     const ro = new ResizeObserver(updateContainerWidth);
     if (containerRef.current) {
@@ -47,7 +53,7 @@ export default function Container({
     return () => {
       ro.disconnect();
     };
-  }, []);
+  }, [layoutSnap, widgetSnap]);
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
@@ -60,7 +66,6 @@ export default function Container({
         const { x, y } = monitor.getSourceClientOffset() as XYCoord;
         let left = x;
         let top = y - containerOffsetTop + (window.scrollY + 0);
-        console.log(window.scrollY + 0);
 
         const [snappedX, snappedY] = doSnapToGrid({
           x: left,
@@ -91,7 +96,6 @@ export default function Container({
         }
 
         const compactResult = compactWidget(moveWidgets, layoutSnap.columns);
-        // console.log({ compactResult });
         widgets.splice(0, widgetSnap.length, ...compactResult);
       },
       collect(monitor) {

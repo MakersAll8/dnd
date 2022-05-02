@@ -64,7 +64,7 @@ export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
   const widgetMap = new Map();
 
   sortedWidgets.forEach((widget) => {
-    const columnEndIndex = widget.left + widget.width;
+    const columnEndIndex = Math.min(columns, widget.left + widget.width);
 
     // an invariant here is that snapToGrid() must have been called before reaching here
     // snapToGrid() guarantees that columnEndIndex won't exceed total columns
@@ -101,6 +101,7 @@ export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
 }
 
 export function compactWidget(widgets: Widgets, columns: MediaColumns) {
+  console.log({ widgets });
   if (columns === 3) return calculateTopDistance(widgets, columns);
   else if (columns === 2) {
     return sortInTwoColumn(widgets);
@@ -141,6 +142,10 @@ export function sortInOneColumn(widgets: Widgets) {
 export function sortInTwoColumn(widgets: Widgets) {
   // a three-column widget can only be two-column wide in a two-column layout
   widgets.forEach((widget) => {
+    if (widget.left > 1) {
+      widget.left = 0;
+    }
+
     if (isOverFlow(widget.left, widget.width, 2)) {
       truncateWidget(widget, 2);
     }
