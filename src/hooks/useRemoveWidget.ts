@@ -19,6 +19,7 @@ export function useRemoveWidget(): TUseRemoveWidgetReturn{
   const removeWidget = useCallback((name:string)=>{
     const dragItemIndex = widgetsSnap.findIndex(
     (widget) => widget.name === name);
+    if(dragItemIndex===-1) return
     const { width, height, children } = widgetsSnap[dragItemIndex];
     carouselWidgets.push({ name, width, height, children });
     const copyWidget = deepCopyWidgets(widgetsSnap);
