@@ -41,6 +41,7 @@ module.exports = {
     'no-nested-ternary': 'off',
     'no-shadow': 'off',
     'react/prop-types': 'off',
+    'react/jsx-props-no-spreading': 'off',
   },
   globals: {
     React: true,

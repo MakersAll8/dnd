@@ -1,5 +1,5 @@
 import {
-  CSSProperties, FC, RefObject, useRef,
+  CSSProperties, RefObject, useRef,
 } from 'react';
 import type { XYCoord } from 'react-dnd';
 import { useDragLayer } from 'react-dnd';
@@ -36,7 +36,7 @@ export interface CustomDragLayerProps {
 
 // drag layer draws over drop target and return a custom drag preview to
 // replace default drag preview provided by DOM dnd api.
-export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
+export function CustomDragLayer({ dashboardRef }:CustomDragLayerProps) {
   function getItemStyles(
     initialOffset: XYCoord | null,
     currentOffset: XYCoord | null,
@@ -100,7 +100,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
     }
   }
 
-  const _snapWidgetDim = {
+  const snapWidgetDimUnits = {
     name: 'snap',
     left,
     top,
@@ -112,7 +112,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   let newWidgetsSnap = deepCopyWidgets(widgetsSnap);
   const oldWidget = newWidgetsSnap.find((_item) => _item.name === item.name);
   newWidgetsSnap = newWidgetsSnap.filter((_item) => _item.name !== item.name);
-  newWidgetsSnap.push(_snapWidgetDim);
+  newWidgetsSnap.push(snapWidgetDimUnits);
   newWidgetsSnap = compactWidget(newWidgetsSnap, layoutSnap.columns);
   const { left: _left, top: _top } = getSnapToPlace(newWidgetsSnap);
   const { name, left: oldLeft, top: oldTop } = currentDraggingItemName.current;
@@ -156,4 +156,4 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
       </div>
     </div>
   );
-};
+}

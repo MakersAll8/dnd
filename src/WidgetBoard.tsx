@@ -1,6 +1,4 @@
-import {
-  ReactNode, useMemo, useRef, useState,
-} from 'react';
+import { useRef, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import {
   CarouselWidget, HEIGHT_COEFFICIENT, Widget, layout,
@@ -13,7 +11,6 @@ import { DraggableWidget } from './DraggableWidget';
 import { WidgetThumbnail } from './WidgetThumbnail';
 
 interface WidgetBoardProps {
-  children: ReactNode;
   widgets: Widget[];
   carouselWidgets: CarouselWidget[];
 }
@@ -29,6 +26,7 @@ export default function WidgetBoard({
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <button
+        type="button"
         onClick={() => {
           setEdit((toggle) => !toggle);
         }}
@@ -56,7 +54,7 @@ export default function WidgetBoard({
       </Carousel>
 
       <div ref={dashboardRef} style={{ flexGrow: 1, position: 'relative' }}>
-        <Container title="Widgets">
+        <Container>
           {widgets.map((availableWidget) => {
             const {
               name, top, left, children, height, width,

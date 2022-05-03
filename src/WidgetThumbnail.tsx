@@ -15,7 +15,7 @@ export const WidgetThumbnail: FC<WidgetThumbnailProps> = memo(
   ({
     name, width, height, children,
   }) => {
-    const [{ isDragging }, drag, preview] = useDrag(() => ({
+    const [, drag, preview] = useDrag(() => ({
       type: ItemTypes.WIDGET_THUMBNAIL,
       item: {
         name, width, height, children,

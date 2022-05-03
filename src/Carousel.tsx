@@ -23,7 +23,7 @@ export function Carousel({ children, edit }: ContainerProps): JSX.Element {
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: ItemTypes.WIDGET,
-      drop(item: DragWidget, monitor) {
+      drop(item: DragWidget) {
         removeWidget(item.name);
       },
       collect(monitor) {

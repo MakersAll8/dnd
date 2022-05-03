@@ -15,7 +15,6 @@ import { snapToGrid as doSnapToGrid } from './snapToGrid';
 
 interface ContainerProps {
   children: ReactNode;
-  title: string;
 }
 
 interface DragWidget {
@@ -29,7 +28,6 @@ interface DragWidget {
 
 export default function Container({
   children,
-  title,
 }: ContainerProps): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetSnap = useSnapshot(widgets);
@@ -58,7 +56,7 @@ export default function Container({
     };
   }, [layoutSnap, widgetSnap]);
 
-  const [{ isOver, canDrop }, drop] = useDrop(
+  const [, drop] = useDrop(
     () => ({
       accept: [ItemTypes.WIDGET, ItemTypes.WIDGET_THUMBNAIL],
       drop(item: DragWidget, monitor): void {

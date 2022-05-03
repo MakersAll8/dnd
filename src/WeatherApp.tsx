@@ -3,7 +3,9 @@ export function WeatherApp(): JSX.Element {
     <div>
       <p>this is the weather app</p>
       <button
+        type="button"
         onClick={() => {
+          // eslint-disable-next-line no-alert
           alert('weather');
         }}
       >
