@@ -96,11 +96,11 @@ describe('testing utils function', () => {
   describe('sortLayoutItemsByRowCol',()=>{
     it('sort the widget array correctly',() => {
       const WidgetObject = transformWidgetArrayToObject(widgets);
-      const sortedWidgets = sortLayoutItemsByRowCol(widgets,3);
-      expect(sortedWidgets[0]).toBe(WidgetObject['b'])
-      expect(sortedWidgets[1]).toBe(WidgetObject['a'])
-      expect(sortedWidgets[2]).toBe(WidgetObject['c'])
-      expect(sortedWidgets[3]).toBe(WidgetObject['d'])
+      const sortedWidgets = sortLayoutItemsByRowCol(widgets);
+      expect(sortedWidgets[0]).toBe(WidgetObject['b']);
+      expect(sortedWidgets[1]).toBe(WidgetObject['a']);
+      expect(sortedWidgets[2]).toBe(WidgetObject['c']);
+      expect(sortedWidgets[3]).toBe(WidgetObject['d']);
     })
   })
 })
