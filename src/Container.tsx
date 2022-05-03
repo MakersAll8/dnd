@@ -1,9 +1,9 @@
 import { CSSProperties, ReactNode, useLayoutEffect, useRef } from "react";
-import { MediaColumnIndex, MediaColumns } from "./hooks/useMediaQuery";
 import { Widget, carouselWidgets, layout, widgets } from "./state";
 import { compactWidget, deepCopyWidgets } from "./utils/utils";
 
 import { ItemTypes } from "./ItemTypes";
+import { MediaColumns } from "./hooks/useMediaQuery";
 import type { XYCoord } from "react-dnd";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import { useDrop } from "react-dnd";
