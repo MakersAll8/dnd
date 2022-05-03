@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, memo } from "react";
+import { CSSProperties, FC, memo } from 'react';
 
 export interface WidgetProps {
   children?: () => JSX.Element;
@@ -7,23 +7,23 @@ export interface WidgetProps {
   highlight?: boolean;
 }
 
-export const Widget: FC<WidgetProps> = memo(function Widget({
+export const Widget: FC<WidgetProps> = memo(({
   name,
   children,
   preview,
   highlight,
-}) {
+}) => {
   const Component = children;
   const styles: CSSProperties = {
-    padding: "0.5rem 1rem",
-    cursor: "move",
-    overflow: "auto",
-    backgroundColor: highlight ? "yellow" : "lightyellow",
-    height: "100%",
-    borderRadius: "8px",
+    padding: '0.5rem 1rem',
+    cursor: 'move',
+    overflow: 'auto',
+    backgroundColor: highlight ? 'yellow' : 'lightyellow',
+    height: '100%',
+    borderRadius: '8px',
   };
   return (
-    <div style={{ ...styles }} role={preview ? "WidgetPreview" : "Widget"}>
+    <div style={{ ...styles }} role={preview ? 'WidgetPreview' : 'Widget'}>
       {Component ? <Component /> : name}
     </div>
   );

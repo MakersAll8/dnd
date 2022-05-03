@@ -1,6 +1,6 @@
-import { MediaColumnIndex, MediaColumns } from "./hooks/useMediaQuery";
+import { MediaColumnIndex, MediaColumns } from './hooks/useMediaQuery';
 
-import { HEIGHT_COEFFICIENT } from "./state";
+import { HEIGHT_COEFFICIENT } from './state';
 
 export interface SnapToGridProps {
   x: number;
@@ -27,15 +27,16 @@ export function snapToGrid({
       snappedX = x < columnPixelWidth / 2 ? 0 : columnPixelWidth;
       break;
     case 3:
+    {
       const columnOneEnd = columnPixelWidth;
       const columnTwoEnd = 2 * columnOneEnd;
-      snappedX =
-        x < columnOneEnd / 2
-          ? 0
-          : x < columnTwoEnd - columnOneEnd / 2
+      snappedX = x < columnOneEnd / 2
+        ? 0
+        : x < columnTwoEnd - columnOneEnd / 2
           ? columnOneEnd
           : columnTwoEnd;
       break;
+    }
     default:
       snappedX = 0;
   }

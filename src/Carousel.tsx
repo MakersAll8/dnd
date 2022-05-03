@@ -1,11 +1,11 @@
-import { CSSProperties, ReactNode, useRef } from "react";
+import { CSSProperties, ReactNode } from 'react';
 
-import { ItemTypes } from "./ItemTypes";
-import { useDrop } from "react-dnd";
-import { useRemoveWidget } from "./hooks/useRemoveWidget";
+import { useDrop } from 'react-dnd';
+import { ItemTypes } from './ItemTypes';
+import { useRemoveWidget } from './hooks/useRemoveWidget';
 
 interface ContainerProps {
-  children?: ReactNode;
+  children: ReactNode;
   edit: boolean;
 }
 
@@ -22,24 +22,24 @@ export function Carousel({ children, edit }: ContainerProps): JSX.Element {
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: ItemTypes.WIDGET,
-      drop(item: DragWidget, monitor) {
+      drop(item: DragWidget) {
         removeWidget(item.name);
       },
       collect(monitor) {
         return { isOver: !!monitor.isOver(), canDrop: !!monitor.canDrop() };
       },
     }),
-    [widgetsSnap, removeWidget]
+    [widgetsSnap, removeWidget],
   );
 
   const styles: CSSProperties = {
-    height: "100%",
-    width: "100%",
-    backgroundColor: isOver ? "darkkhaki" : canDrop ? "darkgreen" : "lightblue",
-    position: "relative",
+    height: '100%',
+    width: '100%',
+    backgroundColor: isOver ? 'darkkhaki' : canDrop ? 'darkgreen' : 'lightblue',
+    position: 'relative',
   };
   return (
-    <div style={{ height: edit ? "150px" : "0px", transition: "height 0.5s" }}>
+    <div style={{ height: edit ? '150px' : '0px', transition: 'height 0.5s' }}>
       <div ref={drop} style={{ ...styles }}>
         {children}
       </div>

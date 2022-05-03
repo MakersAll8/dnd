@@ -1,12 +1,6 @@
-import type { Widget, Widgets } from "../state";
+import type { Widget, Widgets } from '../state';
 
-import { MediaColumns } from "../hooks/useMediaQuery";
-
-const DEBUG = false;
-function log(message: string) {
-  if (!DEBUG) return;
-  console.log(message);
-}
+import { MediaColumns } from '../hooks/useMediaQuery';
 
 /**
  * Sort layout items by row ascending and column ascending.
@@ -15,10 +9,11 @@ function log(message: string) {
  */
 export function sortLayoutItemsByRowCol(widgets: Widgets) {
   // Slice to clone array as sort modifies
-  return widgets.slice(0).sort(function (w1: Widget, w2: Widget) {
+  return widgets.slice(0).sort((w1: Widget, w2: Widget) => {
     if (w1.top > w2.top || (w1.top === w2.top && w1.left > w2.left)) {
       return 1;
-    } else if (w1.top === w2.top && w1.left === w2.left) {
+    }
+    if (w1.top === w2.top && w1.left === w2.left) {
       // Without this, we can get different sort results in IE vs. Chrome/FF
       return 0;
     }
@@ -31,7 +26,7 @@ interface TCompactWidget extends Widget {
 
 function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
   sortedWidgets.forEach((columnWidgets) => {
-    let initialTop = 0;
+    const initialTop = 0;
     columnWidgets.forEach((item, index, array) => {
       // widgets spanning multiple columns only need top calculated once
       if (index === 0 && !item.computed) {
@@ -51,12 +46,16 @@ function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
   });
 }
 
+export function truncateWidget(widget: Widget, columns: number) {
+  widget.width = (columns - widget.left) as MediaColumns;
+}
+
 export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
   const sortedWidgets = sortLayoutItemsByRowCol(widgets);
   // create a new array with only <columns> elements, making each element an empty array
   const columnsWidgets: Array<TCompactWidget[]> = Array.from(
     new Array(columns),
-    () => []
+    () => [],
   );
   // storing as a map to hold reference to each widget
   // this will be useful in calculateTopLayout when calculating top value
@@ -71,7 +70,7 @@ export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
     for (
       let columnIndex = widget.left;
       columnIndex < columnEndIndex;
-      columnIndex++
+      columnIndex += 1
     ) {
       let newWidget: TCompactWidget;
       if (widgetMap.has(widget.name)) {
@@ -99,39 +98,12 @@ export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
   return array;
 }
 
-export function compactWidget(widgets: Widgets, columns: MediaColumns) {
-  console.log({ widgets });
-
-  switch (columns) {
-    case 3:
-      return calculateTopDistance(widgets, columns);
-    case 2:
-      return sortInTwoColumn(widgets);
-    case 1:
-      return sortInOneColumn(widgets);
-    default:
-      throw new Error("Invalid number of columns");
-  }
-}
-
-export function getSnapToPlace(PlacedWidgets: Widgets) {
-  return PlacedWidgets.find((w) => w.name === "snap") || { top: 0, left: 0 };
-}
-
-export function deepCopyWidgets(widgets: Widgets): Widgets {
-  return Array.from(widgets, (item) => ({ ...item }));
-}
-
 export function isOverFlow(
   left: number,
   width: number,
-  columnsNumber: number
+  columnsNumber: number,
 ): boolean {
   return left + width > columnsNumber;
-}
-
-export function truncateWidget(widget: Widget, columns: number) {
-  widget.width = (columns - widget.left) as MediaColumns;
 }
 
 export function sortInOneColumn(widgets: Widgets) {
@@ -157,4 +129,25 @@ export function sortInTwoColumn(widgets: Widgets) {
   const sortedWidgets = sortLayoutItemsByRowCol(widgets);
   const layoutWidgets = calculateTopDistance(sortedWidgets, 2);
   return layoutWidgets;
+}
+
+export function compactWidget(widgets: Widgets, columns: MediaColumns) {
+  switch (columns) {
+    case 3:
+      return calculateTopDistance(widgets, columns);
+    case 2:
+      return sortInTwoColumn(widgets);
+    case 1:
+      return sortInOneColumn(widgets);
+    default:
+      throw new Error('Invalid number of columns');
+  }
+}
+
+export function getSnapToPlace(PlacedWidgets: Widgets) {
+  return PlacedWidgets.find((w) => w.name === 'snap') || { top: 0, left: 0 };
+}
+
+export function deepCopyWidgets(widgets: Widgets): Widgets {
+  return Array.from(widgets, (item) => ({ ...item }));
 }

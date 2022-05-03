@@ -1,13 +1,15 @@
-import { CSSProperties, FC, memo, useCallback, useEffect, useRef } from "react";
+import {
+  CSSProperties, FC, memo, useCallback, useEffect, useRef,
+} from 'react';
 
-import { HEIGHT_COEFFICIENT } from "./state";
-import { ItemTypes } from "./ItemTypes";
-import { MediaColumns } from "./hooks/useMediaQuery";
-import { Widget } from "./Widget";
-import { getEmptyImage } from "react-dnd-html5-backend";
-import styles from "./DraggableWidget.module.css";
-import { useDrag } from "react-dnd";
-import { useRemoveWidget } from "./hooks/useRemoveWidget";
+import { getEmptyImage } from 'react-dnd-html5-backend';
+import { useDrag } from 'react-dnd';
+import { HEIGHT_COEFFICIENT } from './state';
+import { ItemTypes } from './ItemTypes';
+import { MediaColumns } from './hooks/useMediaQuery';
+import { Widget } from './Widget';
+import styles from './DraggableWidget.module.css';
+import { useRemoveWidget } from './hooks/useRemoveWidget';
 
 export interface DraggableWidgetProps {
   name: string;
@@ -21,7 +23,7 @@ export interface DraggableWidgetProps {
 }
 
 export const DraggableWidget: FC<DraggableWidgetProps> = memo(
-  function DraggableWidget(props) {
+  (props) => {
     const { removeWidget, layoutSnap } = useRemoveWidget();
     const columnWidth = layoutSnap.getColumnWidth();
     function getStyles(
@@ -29,25 +31,27 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
       top: number,
       isDragging: boolean,
       height: number,
-      width: MediaColumns
+      width: MediaColumns,
     ): CSSProperties {
       const transform = `translate3d(${left}px, ${top}px, 0)`;
       return {
-        boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
-        position: "absolute",
+        boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
+        position: 'absolute',
         transform,
         WebkitTransform: transform,
         opacity: isDragging ? 0 : 1,
         height: height * HEIGHT_COEFFICIENT,
         width: Math.min(layoutSnap.columns, width) * columnWidth - 20,
-        margin: "10px",
-        borderRadius: "8px",
-        outline: "1px solid red",
+        margin: '10px',
+        borderRadius: '8px',
+        outline: '1px solid red',
       };
     }
 
     const widgetRef = useRef<HTMLDivElement>(null);
-    const { name, left, top, children, height, width } = props;
+    const {
+      name, left, top, children, height, width,
+    } = props;
     const [{ isDragging }, drag, preview] = useDrag(
       () => ({
         type: ItemTypes.WIDGET,
@@ -63,7 +67,7 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
           isDragging: monitor.isDragging(),
         }),
       }),
-      [name, left, top]
+      [name, left, top],
     );
 
     const removeWidgetAction = useCallback(() => {
@@ -80,9 +84,9 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
       <div
         ref={widgetRef}
         style={getStyles(left, top, isDragging, height, width)}
-        role="DraggableBox"
       >
         <button
+          type="button"
           onClick={removeWidgetAction}
           className={styles.WidgetRemoveButton}
         >
@@ -91,5 +95,5 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
         <Widget name={name}>{children}</Widget>
       </div>
     );
-  }
+  },
 );

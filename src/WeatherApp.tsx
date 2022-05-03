@@ -1,14 +1,16 @@
-export const WeatherApp = (): JSX.Element => {
+export function WeatherApp(): JSX.Element {
   return (
     <div>
       <p>this is the weather app</p>
       <button
+        type="button"
         onClick={() => {
-          alert("weather");
+          // eslint-disable-next-line no-alert
+          alert('weather');
         }}
       >
         alert weather
       </button>
     </div>
   );
-};
+}
