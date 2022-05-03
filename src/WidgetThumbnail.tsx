@@ -1,4 +1,4 @@
-import { FC, memo, useEffect } from "react";
+import { FC, memo, useEffect, useRef } from "react";
 
 import { ItemTypes } from "./ItemTypes";
 import { MediaColumns } from "./hooks/useMediaQuery";
@@ -20,13 +20,15 @@ export const WidgetThumbnail: FC<WidgetThumbnailProps> = memo(
         isDragging: monitor.isDragging(),
       }),
     }));
+
     // hide default preview provided by DOM dnd api
     useEffect(() => {
       preview(getEmptyImage(), { captureDraggingState: true });
     }, [preview]);
+
     return (
       <div
-        ref={(node) => drag(node)}
+        ref={drag}
         style={{
           width: "170px",
           height: "85px",
@@ -37,6 +39,7 @@ export const WidgetThumbnail: FC<WidgetThumbnailProps> = memo(
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          opacity: isDragging ? 0 : 1,
         }}
       >
         {name}

@@ -5,7 +5,7 @@ import { ItemTypes } from "./ItemTypes";
 import { MediaColumns } from "./hooks/useMediaQuery";
 import { Widget } from "./Widget";
 import { getEmptyImage } from "react-dnd-html5-backend";
-import styles from './DraggableWidget.module.css'
+import styles from "./DraggableWidget.module.css";
 import { useDrag } from "react-dnd";
 import { useRemoveWidget } from "./hooks/useRemoveWidget";
 
@@ -22,7 +22,7 @@ export interface DraggableWidgetProps {
 
 export const DraggableWidget: FC<DraggableWidgetProps> = memo(
   function DraggableWidget(props) {
-    const {removeWidget,layoutSnap} = useRemoveWidget();
+    const { removeWidget, layoutSnap } = useRemoveWidget();
     const columnWidth = layoutSnap.getColumnWidth();
     function getStyles(
       left: number,
@@ -37,13 +37,12 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
         position: "absolute",
         transform,
         WebkitTransform: transform,
-        // IE fallback: hide the real node using CSS when dragging
-        // because IE will ignore our custom "empty image" drag preview.
         opacity: isDragging ? 0 : 1,
         height: height * HEIGHT_COEFFICIENT,
         width: Math.min(layoutSnap.columns, width) * columnWidth - 20,
         margin: "10px",
         borderRadius: "8px",
+        outline: "1px solid red",
       };
     }
 
@@ -67,9 +66,9 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
       [name, left, top]
     );
 
-    const removeWidgetAction = useCallback(()=>{
+    const removeWidgetAction = useCallback(() => {
       removeWidget(name);
-    },[name,removeWidget])
+    }, [name, removeWidget]);
 
     // hide default preview provided by DOM dnd api
     useEffect(() => {
@@ -83,7 +82,12 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
         style={getStyles(left, top, isDragging, height, width)}
         role="DraggableBox"
       >
-        <button onClick={removeWidgetAction} className={styles.WidgetRemoveButton}>X</button>
+        <button
+          onClick={removeWidgetAction}
+          className={styles.WidgetRemoveButton}
+        >
+          X
+        </button>
         <Widget name={name}>{children}</Widget>
       </div>
     );

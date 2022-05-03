@@ -32,10 +32,15 @@ export default function Container({
   const thumbnailSnap = useSnapshot(carouselWidgets);
   const layoutSnap = useSnapshot(layout);
   const dropRef = useRef<HTMLDivElement>(null);
+  const widthRef = useRef<number>(0);
 
   useLayoutEffect(() => {
     const updateContainerWidth = () => {
       if (!containerRef.current) {
+        return;
+      }
+      // ResizeObserver will trigger even width has not changed.
+      if (widthRef.current === containerRef.current.clientWidth) {
         return;
       }
       layout.dropTargetWidth = containerRef.current.clientWidth;
@@ -44,6 +49,7 @@ export default function Container({
         layoutSnap.columns
       );
       widgets.splice(0, widgetSnap.length, ...compactResult);
+      widthRef.current = containerRef.current.clientWidth;
     };
     const ro = new ResizeObserver(updateContainerWidth);
     if (containerRef.current) {
@@ -65,6 +71,7 @@ export default function Container({
         const { x, y } = monitor.getSourceClientOffset() as XYCoord;
         let left = x;
         let top = y - containerOffsetTop + (window.scrollY + 0);
+        if (top < 0) return;
 
         const [snappedX, snappedY] = doSnapToGrid({
           x: left,
@@ -111,6 +118,7 @@ export default function Container({
     position: "relative",
     border: "1px solid red",
     overflow: "auto",
+    paddingTop: "20px",
   };
   drop(dropRef);
   return (

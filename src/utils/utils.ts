@@ -38,7 +38,6 @@ function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
         item.top = initialTop;
         return;
       }
-
       if (index !== 0) {
         const requiredTop = array[index - 1].top + array[index - 1].height + 1;
         if (item.computed) {
@@ -101,11 +100,17 @@ export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
 }
 
 export function compactWidget(widgets: Widgets, columns: MediaColumns) {
-  if (columns === 3) return calculateTopDistance(widgets, columns);
-  else if (columns === 2) {
-    return sortInTwoColumn(widgets);
-  } else {
-    return sortInOneColumn(widgets);
+  console.log({ widgets });
+
+  switch (columns) {
+    case 3:
+      return calculateTopDistance(widgets, columns);
+    case 2:
+      return sortInTwoColumn(widgets);
+    case 1:
+      return sortInOneColumn(widgets);
+    default:
+      throw new Error("Invalid number of columns");
   }
 }
 
