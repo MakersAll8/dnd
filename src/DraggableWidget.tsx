@@ -1,12 +1,13 @@
-import { CSSProperties, FC, memo, useEffect, useRef } from "react";
-import { HEIGHT_COEFFICIENT, layout } from "./state";
+import { CSSProperties, FC, memo, useCallback, useEffect, useRef } from "react";
 
+import { HEIGHT_COEFFICIENT } from "./state";
 import { ItemTypes } from "./ItemTypes";
 import { MediaColumns } from "./hooks/useMediaQuery";
 import { Widget } from "./Widget";
 import { getEmptyImage } from "react-dnd-html5-backend";
+import styles from './DraggableWidget.module.css'
 import { useDrag } from "react-dnd";
-import { useSnapshot } from "valtio";
+import { useRemoveWidget } from "./hooks/useRemoveWidget";
 
 export interface DraggableWidgetProps {
   name: string;
@@ -21,7 +22,7 @@ export interface DraggableWidgetProps {
 
 export const DraggableWidget: FC<DraggableWidgetProps> = memo(
   function DraggableWidget(props) {
-    const layoutSnap = useSnapshot(layout);
+    const {removeWidget,layoutSnap} = useRemoveWidget();
     const columnWidth = layoutSnap.getColumnWidth();
     function getStyles(
       left: number,
@@ -66,6 +67,10 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
       [name, left, top]
     );
 
+    const removeWidgetAction = useCallback(()=>{
+      removeWidget(name);
+    },[name,removeWidget])
+
     // hide default preview provided by DOM dnd api
     useEffect(() => {
       preview(getEmptyImage(), { captureDraggingState: true });
@@ -78,6 +83,7 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
         style={getStyles(left, top, isDragging, height, width)}
         role="DraggableBox"
       >
+        <button onClick={removeWidgetAction} className={styles.WidgetRemoveButton}>X</button>
         <Widget name={name}>{children}</Widget>
       </div>
     );
