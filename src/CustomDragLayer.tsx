@@ -1,31 +1,33 @@
-import { CSSProperties, FC, RefObject, useRef } from "react";
+import {
+  CSSProperties, FC, RefObject, useRef,
+} from 'react';
+import type { XYCoord } from 'react-dnd';
+import { useDragLayer } from 'react-dnd';
+import { useSnapshot } from 'valtio';
 import {
   CarouselWidget,
   HEIGHT_COEFFICIENT,
   Widget,
   layout,
   widgets,
-} from "./state";
-import { compactWidget, deepCopyWidgets, getSnapToPlace } from "./utils/utils";
+} from './state';
+import { compactWidget, deepCopyWidgets, getSnapToPlace } from './utils/utils';
 
-import { ItemTypes } from "./ItemTypes";
-import { MediaColumns } from "./hooks/useMediaQuery";
-import { WidgetDragPreview } from "./WidgetDragPreview";
-import { WidgetThumbnail } from "./WidgetThumbnail";
-import type { XYCoord } from "react-dnd";
-import { snapToGrid } from "./snapToGrid";
-import { useDragLayer } from "react-dnd";
-import { useSnapshot } from "valtio";
+import { ItemTypes } from './ItemTypes';
+import { MediaColumns } from './hooks/useMediaQuery';
+import { WidgetDragPreview } from './WidgetDragPreview';
+import { WidgetThumbnail } from './WidgetThumbnail';
+import { snapToGrid } from './snapToGrid';
 
 const layerStyles: CSSProperties = {
   // position: "fixed",
-  position: "absolute",
-  pointerEvents: "none",
+  position: 'absolute',
+  pointerEvents: 'none',
   zIndex: 100,
   left: 0,
   top: 0,
-  width: "100%",
-  height: "100%",
+  width: '100%',
+  height: '100%',
 };
 
 export interface CustomDragLayerProps {
@@ -37,15 +39,15 @@ export interface CustomDragLayerProps {
 export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   function getItemStyles(
     initialOffset: XYCoord | null,
-    currentOffset: XYCoord | null
+    currentOffset: XYCoord | null,
   ) {
     if (!initialOffset || !currentOffset) {
       return {
-        display: "none",
+        display: 'none',
       };
     }
 
-    let { x, y } = currentOffset;
+    const { x, y } = currentOffset;
 
     const transform = `translate(${x}px, ${
       y - (dashboardRef.current?.offsetTop || 0) + (window.scrollY || 0)
@@ -57,15 +59,16 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
     };
   }
 
-  const { itemType, isDragging, item, initialOffset, currentOffset } =
-    useDragLayer((monitor) => ({
-      item: monitor.getItem() as Widget | CarouselWidget,
-      itemType: monitor.getItemType(),
-      initialOffset: monitor.getInitialSourceClientOffset(),
-      currentOffset: monitor.getSourceClientOffset(),
-      isDragging: monitor.isDragging(),
-    }));
-  const currentDraggingItemName = useRef({ name: "", left: 0, top: 0 });
+  const {
+    itemType, isDragging, item, initialOffset, currentOffset,
+  } = useDragLayer((monitor) => ({
+    item: monitor.getItem() as Widget | CarouselWidget,
+    itemType: monitor.getItemType(),
+    initialOffset: monitor.getInitialSourceClientOffset(),
+    currentOffset: monitor.getSourceClientOffset(),
+    isDragging: monitor.isDragging(),
+  }));
+  const currentDraggingItemName = useRef({ name: '', left: 0, top: 0 });
 
   const layoutSnap = useSnapshot(layout);
   const widgetsSnap = useSnapshot(widgets);
@@ -78,9 +81,9 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   const [left, top] = snapToGrid({
     x: currentOffset?.x || 0,
     y:
-      (currentOffset?.y || 0) -
-      (dashboardRef.current?.offsetTop || 0) +
-      (window.scrollY || 0),
+      (currentOffset?.y || 0)
+      - (dashboardRef.current?.offsetTop || 0)
+      + (window.scrollY || 0),
     columns: layoutSnap.columns,
     containerWidth: layoutSnap.dropTargetWidth,
     itemWidth: item.width,
@@ -98,9 +101,9 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   }
 
   const _snapWidgetDim = {
-    name: "snap",
-    left: left,
-    top: top,
+    name: 'snap',
+    left,
+    top,
     height: item.height,
     width: Math.min(layoutSnap.columns, item.width) as MediaColumns,
   };
@@ -115,7 +118,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   const { name, left: oldLeft, top: oldTop } = currentDraggingItemName.current;
 
   if (name !== item.name || oldLeft !== _left || oldTop !== _top) {
-    const newWidgetList = newWidgetsSnap.filter((i) => i.name !== "snap");
+    const newWidgetList = newWidgetsSnap.filter((i) => i.name !== 'snap');
     if (oldWidget) {
       newWidgetList.push(oldWidget);
     }
@@ -128,7 +131,7 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   }
 
   const snapWidgetDim = {
-    name: "snap",
+    name: 'snap',
     left: _left * layoutSnap.getColumnWidth(),
     top: _top * HEIGHT_COEFFICIENT,
     height: item.height * HEIGHT_COEFFICIENT,
@@ -136,23 +139,21 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = ({ dashboardRef }) => {
   };
 
   return (
-    <>
-      <div style={layerStyles}>
-        {left >= 0 && top >= 0 && (
-          <div
-            style={{
-              backgroundColor: "gray",
-              position: "absolute",
-              ...snapWidgetDim,
-            }}
-          >
-            snap to
-          </div>
-        )}
-        <div style={getItemStyles(initialOffset, currentOffset)}>
-          {renderItem()}
-        </div>
+    <div style={layerStyles}>
+      {left >= 0 && top >= 0 && (
+      <div
+        style={{
+          backgroundColor: 'gray',
+          position: 'absolute',
+          ...snapWidgetDim,
+        }}
+      >
+        snap to
       </div>
-    </>
+      )}
+      <div style={getItemStyles(initialOffset, currentOffset)}>
+        {renderItem()}
+      </div>
+    </div>
   );
 };

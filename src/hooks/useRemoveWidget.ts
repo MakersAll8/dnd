@@ -1,9 +1,8 @@
-import type { Layout, Widgets } from "../state";
-import { carouselWidgets, layout, widgets } from "../state";
-import {compactWidget, deepCopyWidgets} from "../utils/utils";
-
-import { useCallback } from "react";
-import { useSnapshot } from "valtio";
+import { useCallback } from 'react';
+import { useSnapshot } from 'valtio';
+import type { Layout, Widgets } from '../state';
+import { carouselWidgets, layout, widgets } from '../state';
+import { compactWidget, deepCopyWidgets } from '../utils/utils';
 
 interface TUseRemoveWidgetReturn {
   removeWidget:(name:string)=>void;
@@ -13,15 +12,18 @@ interface TUseRemoveWidgetReturn {
 /**
  *  hook help to remove widget from global state
  * */
-export function useRemoveWidget(): TUseRemoveWidgetReturn{
+export function useRemoveWidget(): TUseRemoveWidgetReturn {
   const widgetsSnap = useSnapshot(widgets);
   const layoutSnap = useSnapshot(layout);
-  const removeWidget = useCallback((name:string)=>{
+  const removeWidget = useCallback((name:string) => {
     const dragItemIndex = widgetsSnap.findIndex(
-    (widget) => widget.name === name);
-    if(dragItemIndex===-1) return
+      (widget) => widget.name === name,
+    );
+    if (dragItemIndex === -1) return;
     const { width, height, children } = widgetsSnap[dragItemIndex];
-    carouselWidgets.push({ name, width, height, children });
+    carouselWidgets.push({
+      name, width, height, children,
+    });
     const copyWidget = deepCopyWidgets(widgetsSnap);
     // remove 1 element at dragItemIndex from copyWidget, mutating it.
     copyWidget.splice(dragItemIndex, 1);
@@ -29,10 +31,13 @@ export function useRemoveWidget(): TUseRemoveWidgetReturn{
     widgets.splice(
       0,
       widgets.length,
-      ...compactWidget(copyWidget, layoutSnap.columns));},[layoutSnap,widgetsSnap]);
+      ...compactWidget(copyWidget, layoutSnap.columns),
+    );
+  }, [layoutSnap, widgetsSnap]);
 
-  return {removeWidget,
-        widgetsSnap,
-        layoutSnap
-      }
-  }
+  return {
+    removeWidget,
+    widgetsSnap,
+    layoutSnap,
+  };
+}

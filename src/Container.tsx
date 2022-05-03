@@ -1,16 +1,20 @@
-import { CSSProperties, ReactNode, useLayoutEffect, useRef } from "react";
-import { Widget, carouselWidgets, layout, widgets } from "./state";
-import { compactWidget, deepCopyWidgets } from "./utils/utils";
+import {
+  CSSProperties, ReactNode, useLayoutEffect, useRef,
+} from 'react';
+import type { XYCoord } from 'react-dnd';
+import { useDrop } from 'react-dnd';
+import { useSnapshot } from 'valtio';
+import {
+  Widget, carouselWidgets, layout, widgets,
+} from './state';
+import { compactWidget, deepCopyWidgets } from './utils/utils';
 
-import { ItemTypes } from "./ItemTypes";
-import { MediaColumns } from "./hooks/useMediaQuery";
-import type { XYCoord } from "react-dnd";
-import { snapToGrid as doSnapToGrid } from "./snapToGrid";
-import { useDrop } from "react-dnd";
-import { useSnapshot } from "valtio";
+import { ItemTypes } from './ItemTypes';
+import { MediaColumns } from './hooks/useMediaQuery';
+import { snapToGrid as doSnapToGrid } from './snapToGrid';
 
 interface ContainerProps {
-  children?: ReactNode;
+  children: ReactNode;
   title: string;
 }
 
@@ -41,7 +45,7 @@ export default function Container({
       layout.dropTargetWidth = containerRef.current.clientWidth;
       const compactResult = compactWidget(
         [...deepCopyWidgets(widgetSnap)],
-        layoutSnap.columns
+        layoutSnap.columns,
       );
       widgets.splice(0, widgetSnap.length, ...compactResult);
     };
@@ -63,8 +67,8 @@ export default function Container({
         )?.offsetTop;
 
         const { x, y } = monitor.getSourceClientOffset() as XYCoord;
-        let left = x;
-        let top = y - containerOffsetTop + (window.scrollY + 0);
+        const left = x;
+        const top = y - containerOffsetTop + (window.scrollY + 0);
 
         const [snappedX, snappedY] = doSnapToGrid({
           x: left,
@@ -79,7 +83,7 @@ export default function Container({
         if (itemType === ItemTypes.WIDGET) {
           moveWidgets = deepCopyWidgets(widgetSnap);
           const index = moveWidgets.findIndex(
-            (widget) => widget.name === item.name
+            (widget) => widget.name === item.name,
           );
           moveWidgets[index].top = snappedY;
           moveWidgets[index].left = snappedX;
@@ -87,7 +91,7 @@ export default function Container({
 
         if (itemType === ItemTypes.WIDGET_THUMBNAIL) {
           const index = thumbnailSnap.findIndex(
-            (widget) => widget.name === item.name
+            (widget) => widget.name === item.name,
           );
           const [carouselWidget] = carouselWidgets.splice(index, 1);
           const cW = { ...carouselWidget, top: snappedY, left: snappedX };
@@ -101,20 +105,20 @@ export default function Container({
         return { isOver: !!monitor.isOver(), canDrop: !!monitor.canDrop() };
       },
     }),
-    [widgetSnap, thumbnailSnap, layoutSnap]
+    [widgetSnap, thumbnailSnap, layoutSnap],
   );
 
   const styles: CSSProperties = {
-    height: "100%",
-    width: "100%",
-    backgroundColor: "rgba(255, 255, 255, 1)",
-    position: "relative",
-    border: "1px solid red",
-    overflow: "auto",
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    position: 'relative',
+    border: '1px solid red',
+    overflow: 'auto',
   };
   drop(dropRef);
   return (
-    <div ref={containerRef} style={{ height: "100%" }}>
+    <div ref={containerRef} style={{ height: '100%' }}>
       <div ref={dropRef} style={{ ...styles }}>
         {children}
       </div>

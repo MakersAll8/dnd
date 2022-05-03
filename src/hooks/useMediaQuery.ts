@@ -1,11 +1,13 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import {
+  useCallback, useLayoutEffect, useMemo, useState,
+} from 'react';
 
 export type MediaName =
-  | "phone"
-  | "tablet_portrait"
-  | "tablet_landscape"
-  | "laptop"
-  | "desktop";
+  | 'phone'
+  | 'tablet_portrait'
+  | 'tablet_landscape'
+  | 'laptop'
+  | 'desktop';
 
 export type MediaQueries = { queryText: string; mediaName: string }[];
 
@@ -18,11 +20,11 @@ export type MediaMatches =
   | undefined;
 
 export const MEDIA_QUERIES = [
-  { queryText: "(min-width: 1200px)", mediaName: "desktop" },
-  { queryText: "(min-width: 992px)", mediaName: "laptop" },
-  { queryText: "(min-width: 768px)", mediaName: "tablet_landscape" },
-  { queryText: "(min-width: 576px)", mediaName: "tablet_portrait" },
-  { queryText: "(min-width: 0px)", mediaName: "phone" },
+  { queryText: '(min-width: 1200px)', mediaName: 'desktop' },
+  { queryText: '(min-width: 992px)', mediaName: 'laptop' },
+  { queryText: '(min-width: 768px)', mediaName: 'tablet_landscape' },
+  { queryText: '(min-width: 576px)', mediaName: 'tablet_portrait' },
+  { queryText: '(min-width: 0px)', mediaName: 'phone' },
 ];
 
 export function useMediaQuery(mediaQueries: MediaQueries) {
@@ -44,7 +46,7 @@ export function useMediaQuery(mediaQueries: MediaQueries) {
           };
         }
         return undefined;
-      }
+      },
     );
     const mediaMatches = matches.filter((m) => m !== undefined);
 
@@ -53,7 +55,7 @@ export function useMediaQuery(mediaQueries: MediaQueries) {
 
   useLayoutEffect(() => {
     const bodySizeObserver = new ResizeObserver(getMediaQueryLists);
-    const body = document.querySelector("body") as HTMLBodyElement;
+    const body = document.querySelector('body') as HTMLBodyElement;
     bodySizeObserver.observe(body);
     return (): void => {
       bodySizeObserver.disconnect();
@@ -63,12 +65,12 @@ export function useMediaQuery(mediaQueries: MediaQueries) {
   return { media };
 }
 
+export type MediaColumns = 1 | 2 | 3;
+export type MediaColumnIndex = 0 | 1 | 2;
+
 export interface DropTargetColumnsReturn {
   columns: MediaColumns;
 }
-
-export type MediaColumns = 1 | 2 | 3;
-export type MediaColumnIndex = 0 | 1 | 2;
 
 export function useDropTargetColumns(): DropTargetColumnsReturn {
   const { media } = useMediaQuery(MEDIA_QUERIES);
@@ -81,13 +83,13 @@ export function useDropTargetColumns(): DropTargetColumnsReturn {
       return 1;
     }
     switch (largestMatch.mediaName) {
-      case "tablet_landscape":
-      case "tablet_portrait":
-      case "phone":
+      case 'tablet_landscape':
+      case 'tablet_portrait':
+      case 'phone':
         return 1;
-      case "laptop":
+      case 'laptop':
         return 2;
-      case "desktop":
+      case 'desktop':
         return 3;
       default:
         return 1;

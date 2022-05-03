@@ -1,10 +1,14 @@
-import { MediaColumnIndex, MediaColumns } from "./hooks/useMediaQuery";
-
-import { WeatherApp } from "./WeatherApp";
-import { proxy } from "valtio";
+import { proxy } from 'valtio';
+import { MediaColumnIndex, MediaColumns } from './hooks/useMediaQuery';
+import { WeatherApp } from './WeatherApp';
 
 export const HEIGHT_COEFFICIENT = 17;
-
+export interface CarouselWidget {
+  name: string;
+  children?: () => JSX.Element;
+  height: number;
+  width: MediaColumns;
+}
 export interface Widget extends CarouselWidget {
   left: MediaColumnIndex;
   top: number;
@@ -13,13 +17,6 @@ export interface Widget extends CarouselWidget {
 }
 
 export type Widgets = Widget[];
-
-export interface CarouselWidget {
-  name: string;
-  children?: () => JSX.Element;
-  height: number;
-  width: MediaColumns;
-}
 
 export interface Layout {
   dropTargetWidth: number;
@@ -38,17 +35,17 @@ export interface Placeholder {
 
 export const carouselWidgets = proxy<CarouselWidget[]>([
   {
-    name: "sick bay students widget",
+    name: 'sick bay students widget',
     width: 1,
     height: 15,
   },
   {
-    name: "favorite pages",
+    name: 'favorite pages',
     width: 1,
     height: 25,
   },
   {
-    name: "birthday today",
+    name: 'birthday today',
     width: 1,
     height: 10,
   },
@@ -56,7 +53,7 @@ export const carouselWidgets = proxy<CarouselWidget[]>([
 
 export const widgets = proxy<Widgets>([
   {
-    name: "weather widget",
+    name: 'weather widget',
     left: 0,
     top: 0,
     width: 2,
@@ -64,7 +61,7 @@ export const widgets = proxy<Widgets>([
     children: () => <WeatherApp />,
   },
   {
-    name: "to do list widget",
+    name: 'to do list widget',
     left: 1,
     top: 16,
     width: 1,
