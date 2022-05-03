@@ -1,0 +1,10 @@
+.WidgetRemoveButton{
+  position: absolute;
+  top:0;
+  right:0;
+  transform: translate(50%, -50%);
+  width: 25.25px;
+  height: 25.25px;
+  border-radius:50%;
+  border:1px grey solid;
+}

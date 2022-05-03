@@ -1,10 +1,8 @@
 import { CSSProperties, ReactNode, useRef } from "react";
-import { carouselWidgets, layout, widgets } from "./state";
-import { compactWidget, deepCopyWidgets } from "./utils/utils";
 
 import { ItemTypes } from "./ItemTypes";
 import { useDrop } from "react-dnd";
-import { useSnapshot } from "valtio";
+import {useRemoveWidget} from "./hooks/useRemoveWidget";
 
 interface ContainerProps {
   children?: ReactNode;
@@ -20,33 +18,19 @@ interface DragWidget {
 
 export function Carousel({ children, edit }: ContainerProps): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
-  const widgetsSnap = useSnapshot(widgets);
-  const layoutSnap = useSnapshot(layout);
+  const {removeWidget,widgetsSnap} = useRemoveWidget();
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: ItemTypes.WIDGET,
       drop(item: DragWidget, monitor) {
-        const dragItemIndex = widgetsSnap.findIndex(
-          (widget) => widget.name === item.name
-        );
-        const { width, height, name, children } = widgetsSnap[dragItemIndex];
-        carouselWidgets.push({ name, width, height, children });
-        const copyWidget = deepCopyWidgets(widgetsSnap);
-        // remove 1 element at dragItemIndex from copyWidget, mutating it.
-        copyWidget.splice(dragItemIndex, 1);
-        // mutating widgets directly to trigger state update in valtio state.
-        widgets.splice(
-          0,
-          widgets.length,
-          ...compactWidget(copyWidget, layoutSnap.columns)
-        );
+        removeWidget(item.name);
       },
       collect(monitor) {
         return { isOver: !!monitor.isOver(), canDrop: !!monitor.canDrop() };
       },
     }),
-    [widgetsSnap]
+    [widgetsSnap,removeWidget]
   );
 
   const styles: CSSProperties = {

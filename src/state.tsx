@@ -3,7 +3,7 @@ import { MediaColumnIndex, MediaColumns } from "./hooks/useMediaQuery";
 import { WeatherApp } from "./WeatherApp";
 import { proxy } from "valtio";
 
-export const HEIGHT_COEFFICIENT = 10;
+export const HEIGHT_COEFFICIENT = 17;
 
 export interface Widget extends CarouselWidget {
   left: MediaColumnIndex;
