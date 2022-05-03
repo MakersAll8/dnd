@@ -39,13 +39,12 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
         position: 'absolute',
         transform,
         WebkitTransform: transform,
-        // IE fallback: hide the real node using CSS when dragging
-        // because IE will ignore our custom "empty image" drag preview.
         opacity: isDragging ? 0 : 1,
         height: height * HEIGHT_COEFFICIENT,
         width: Math.min(layoutSnap.columns, width) * columnWidth - 20,
         margin: '10px',
         borderRadius: '8px',
+        outline: '1px solid red',
       };
     }
 
@@ -86,7 +85,13 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
         ref={widgetRef}
         style={getStyles(left, top, isDragging, height, width)}
       >
-        <button type="button" onClick={removeWidgetAction} className={styles.WidgetRemoveButton}>X</button>
+        <button
+          type="button"
+          onClick={removeWidgetAction}
+          className={styles.WidgetRemoveButton}
+        >
+          X
+        </button>
         <Widget name={name}>{children}</Widget>
       </div>
     );

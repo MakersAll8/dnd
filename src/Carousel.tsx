@@ -1,5 +1,5 @@
-import { CSSProperties, useRef } from 'react';
-import type { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
+
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from './ItemTypes';
 import { useRemoveWidget } from './hooks/useRemoveWidget';
@@ -17,7 +17,6 @@ interface DragWidget {
 }
 
 export function Carousel({ children, edit }: ContainerProps): JSX.Element {
-  const containerRef = useRef<HTMLDivElement>(null);
   const { removeWidget, widgetsSnap } = useRemoveWidget();
 
   const [{ isOver, canDrop }, drop] = useDrop(
@@ -40,10 +39,7 @@ export function Carousel({ children, edit }: ContainerProps): JSX.Element {
     position: 'relative',
   };
   return (
-    <div
-      ref={containerRef}
-      style={{ height: edit ? '150px' : '0px', transition: 'height 0.5s' }}
-    >
+    <div style={{ height: edit ? '150px' : '0px', transition: 'height 0.5s' }}>
       <div ref={drop} style={{ ...styles }}>
         {children}
       </div>

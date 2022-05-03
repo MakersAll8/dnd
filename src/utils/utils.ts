@@ -12,7 +12,8 @@ export function sortLayoutItemsByRowCol(widgets: Widgets) {
   return widgets.slice(0).sort((w1: Widget, w2: Widget) => {
     if (w1.top > w2.top || (w1.top === w2.top && w1.left > w2.left)) {
       return 1;
-    } if (w1.top === w2.top && w1.left === w2.left) {
+    }
+    if (w1.top === w2.top && w1.left === w2.left) {
       // Without this, we can get different sort results in IE vs. Chrome/FF
       return 0;
     }
@@ -32,7 +33,6 @@ function calculateTopLayout(sortedWidgets: TCompactWidget[][]) {
         item.top = initialTop;
         return;
       }
-
       if (index !== 0) {
         const requiredTop = array[index - 1].top + array[index - 1].height + 1;
         if (item.computed) {
@@ -98,6 +98,14 @@ export function calculateTopDistance(widgets: Widgets, columns: MediaColumns) {
   return array;
 }
 
+export function isOverFlow(
+  left: number,
+  width: number,
+  columnsNumber: number,
+): boolean {
+  return left + width > columnsNumber;
+}
+
 export function sortInOneColumn(widgets: Widgets) {
   widgets.forEach((widget) => {
     widget.left = 0;
@@ -105,14 +113,6 @@ export function sortInOneColumn(widgets: Widgets) {
   const sortedWidgets = sortLayoutItemsByRowCol(widgets);
   const layoutWidgets = calculateTopDistance(sortedWidgets, 1);
   return layoutWidgets;
-}
-
-export function isOverFlow(
-  left: number,
-  width: number,
-  columnsNumber: number,
-): boolean {
-  return left + width > columnsNumber;
 }
 
 export function sortInTwoColumn(widgets: Widgets) {
@@ -132,11 +132,16 @@ export function sortInTwoColumn(widgets: Widgets) {
 }
 
 export function compactWidget(widgets: Widgets, columns: MediaColumns) {
-  if (columns === 3) return calculateTopDistance(widgets, columns);
-  if (columns === 2) {
-    return sortInTwoColumn(widgets);
+  switch (columns) {
+    case 3:
+      return calculateTopDistance(widgets, columns);
+    case 2:
+      return sortInTwoColumn(widgets);
+    case 1:
+      return sortInOneColumn(widgets);
+    default:
+      throw new Error('Invalid number of columns');
   }
-  return sortInOneColumn(widgets);
 }
 
 export function getSnapToPlace(PlacedWidgets: Widgets) {

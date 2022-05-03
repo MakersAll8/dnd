@@ -15,7 +15,7 @@ export const WidgetThumbnail: FC<WidgetThumbnailProps> = memo(
   ({
     name, width, height, children,
   }) => {
-    const [, drag, preview] = useDrag(() => ({
+    const [{ isDragging }, drag, preview] = useDrag(() => ({
       type: ItemTypes.WIDGET_THUMBNAIL,
       item: {
         name, width, height, children,
@@ -24,13 +24,15 @@ export const WidgetThumbnail: FC<WidgetThumbnailProps> = memo(
         isDragging: monitor.isDragging(),
       }),
     }));
+
     // hide default preview provided by DOM dnd api
     useEffect(() => {
       preview(getEmptyImage(), { captureDraggingState: true });
     }, [preview]);
+
     return (
       <div
-        ref={(node) => drag(node)}
+        ref={drag}
         style={{
           width: '170px',
           height: '85px',
@@ -41,6 +43,7 @@ export const WidgetThumbnail: FC<WidgetThumbnailProps> = memo(
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          opacity: isDragging ? 0 : 1,
         }}
       >
         {name}
