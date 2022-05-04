@@ -1,9 +1,7 @@
 import { useRef, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import {
-  CarouselWidget, HEIGHT_COEFFICIENT, Widget, layout,
-} from './state';
-
+import { HEIGHT_COEFFICIENT, Widget, layout } from './state';
+import type { CarrouselWidgets } from './state';
 import { Carousel } from './Carousel';
 import Container from './Container';
 import { CustomDragLayer } from './CustomDragLayer';
@@ -12,7 +10,7 @@ import { WidgetThumbnail } from './WidgetThumbnail';
 
 interface WidgetBoardProps {
   widgets: Widget[];
-  carouselWidgets: CarouselWidget[];
+  carouselWidgets: CarrouselWidgets[];
 }
 
 export default function WidgetBoard({

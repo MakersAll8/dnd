@@ -1,15 +1,19 @@
+import { lazy } from 'react';
 import { proxy } from 'valtio';
 import { MediaColumnIndex, MediaColumns } from './hooks/useMediaQuery';
-import { WeatherApp } from './WeatherApp';
+import { WeatherApp } from './widgets/Weather';
+
+const Timer = lazy(() => import('./widgets/Timer'));
+const Counter = lazy(() => import('./widgets/Counter'));
 
 export const HEIGHT_COEFFICIENT = 17;
-export interface CarouselWidget {
+export interface CarrouselWidgets {
   name: string;
   children?: () => JSX.Element;
   height: number;
   width: MediaColumns;
 }
-export interface Widget extends CarouselWidget {
+export interface Widget extends CarrouselWidgets {
   left: MediaColumnIndex;
   top: number;
   moved?: boolean;
@@ -33,7 +37,7 @@ export interface Placeholder {
   isPlaceholder: true;
 }
 
-export const carouselWidgets = proxy<CarouselWidget[]>([
+export const carrouselWidgets = proxy<CarrouselWidgets[]>([
   {
     name: 'sick bay students widget',
     width: 1,
@@ -48,6 +52,16 @@ export const carouselWidgets = proxy<CarouselWidget[]>([
     name: 'birthday today',
     width: 1,
     height: 10,
+  }, {
+    name: 'timer',
+    width: 1,
+    height: 15,
+    children: () => <Timer />,
+  }, {
+    name: 'counter',
+    width: 1,
+    height: 15,
+    children: () => <Counter />,
   },
 ]);
 

@@ -4,7 +4,7 @@ import {
 import { useDragLayer, XYCoord } from 'react-dnd';
 import { useSnapshot } from 'valtio';
 import {
-  CarouselWidget,
+  CarrouselWidgets,
   HEIGHT_COEFFICIENT,
   Widget,
   layout,
@@ -61,7 +61,7 @@ export function CustomDragLayer({ dashboardRef }:CustomDragLayerProps) {
   const {
     itemType, isDragging, item, initialOffset, currentOffset,
   } = useDragLayer((monitor) => ({
-    item: monitor.getItem() as Widget | CarouselWidget,
+    item: monitor.getItem() as Widget | CarrouselWidgets,
     itemType: monitor.getItemType(),
     initialOffset: monitor.getInitialSourceClientOffset(),
     currentOffset: monitor.getSourceClientOffset(),

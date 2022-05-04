@@ -3,10 +3,10 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { proxy as mockedProxy } from 'valtio';
 import { waitFor } from '@testing-library/react';
 import { useRemoveWidget } from '../useRemoveWidget';
-import type { CarouselWidget, Layout, Widgets } from '../../state';
+import type { CarrouselWidgets, Layout, Widgets } from '../../state';
 
 jest.mock('../../state', () => ({
-  carouselWidgets: mockedProxy<CarouselWidget[]>([
+  carouselWidgets: mockedProxy<CarrouselWidgets[]>([
     {
       name: 'sick bay students widget',
       width: 1,

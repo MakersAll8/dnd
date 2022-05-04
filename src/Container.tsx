@@ -5,7 +5,7 @@ import type { XYCoord } from 'react-dnd';
 import { useDrop } from 'react-dnd';
 import { useSnapshot } from 'valtio';
 import {
-  Widget, carouselWidgets, layout, widgets,
+  Widget, carrouselWidgets, layout, widgets,
 } from './state';
 import { compactWidget, deepCopyWidgets } from './utils/utils';
 
@@ -31,7 +31,7 @@ export default function Container({
 }: ContainerProps): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetSnap = useSnapshot(widgets);
-  const thumbnailSnap = useSnapshot(carouselWidgets);
+  const thumbnailSnap = useSnapshot(carrouselWidgets);
   const layoutSnap = useSnapshot(layout);
   const dropRef = useRef<HTMLDivElement>(null);
   const widthRef = useRef<number>(0);
@@ -98,7 +98,7 @@ export default function Container({
           const index = thumbnailSnap.findIndex(
             (widget) => widget.name === item.name,
           );
-          const [carouselWidget] = carouselWidgets.splice(index, 1);
+          const [carouselWidget] = carrouselWidgets.splice(index, 1);
           const cW = { ...carouselWidget, top: snappedY, left: snappedX };
           moveWidgets = [...deepCopyWidgets(widgetSnap), cW];
         }

@@ -1,4 +1,6 @@
-import { CSSProperties, FC, memo } from 'react';
+import {
+  CSSProperties, FC, memo, Suspense,
+} from 'react';
 
 export interface WidgetProps {
   children?: () => JSX.Element;
@@ -24,7 +26,9 @@ export const Widget: FC<WidgetProps> = memo(({
   };
   return (
     <div style={{ ...styles }} role={preview ? 'WidgetPreview' : 'Widget'}>
-      {Component ? <Component /> : name}
+      <Suspense fallback={<div>loading</div>}>
+        {Component ? <Component /> : name}
+      </Suspense>
     </div>
   );
 });

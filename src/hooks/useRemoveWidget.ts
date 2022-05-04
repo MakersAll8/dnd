@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSnapshot } from 'valtio';
 import type { Layout, Widgets } from '../state';
-import { carouselWidgets, layout, widgets } from '../state';
+import { carrouselWidgets, layout, widgets } from '../state';
 import { compactWidget, deepCopyWidgets } from '../utils/utils';
 
 interface TUseRemoveWidgetReturn {
@@ -21,7 +21,7 @@ export function useRemoveWidget(): TUseRemoveWidgetReturn {
     );
     if (dragItemIndex === -1) return;
     const { width, height, children } = widgetsSnap[dragItemIndex];
-    carouselWidgets.push({
+    carrouselWidgets.push({
       name, width, height, children,
     });
     const copyWidget = deepCopyWidgets(widgetsSnap);

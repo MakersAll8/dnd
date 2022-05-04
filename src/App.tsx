@@ -4,7 +4,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { useSnapshot } from 'valtio';
-import { carouselWidgets, layout, widgets } from './state';
+import { carrouselWidgets, layout, widgets } from './state';
 
 import WidgetBoard from './WidgetBoard';
 import { isTouchScreen } from './detectScreen';
@@ -14,7 +14,7 @@ const touchScreen = isTouchScreen();
 
 export default function App() {
   const widgetsSnap = useSnapshot(widgets);
-  const carouselSnap = useSnapshot(carouselWidgets);
+  const carouselSnap = useSnapshot(carrouselWidgets);
   const { columns } = useDropTargetColumns();
   useLayoutEffect(() => {
     layout.columns = columns;
