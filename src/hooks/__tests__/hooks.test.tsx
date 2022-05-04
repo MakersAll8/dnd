@@ -6,7 +6,7 @@ import { useRemoveWidget } from '../useRemoveWidget';
 import type { CarrouselWidgets, Layout, Widgets } from '../../state';
 
 jest.mock('../../state', () => ({
-  carouselWidgets: mockedProxy<CarrouselWidgets[]>([
+  carrouselWidgets: mockedProxy<CarrouselWidgets[]>([
     {
       name: 'sick bay students widget',
       width: 1,
