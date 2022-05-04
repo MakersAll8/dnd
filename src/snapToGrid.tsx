@@ -24,7 +24,7 @@ export function snapToGrid({
       snappedX = 0;
       break;
     case 2:
-      snappedX = x < columnPixelWidth / 2 ? 0 : columnPixelWidth;
+      snappedX = x < columnPixelWidth / 3 ? 0 : columnPixelWidth;
       break;
     case 3:
     {

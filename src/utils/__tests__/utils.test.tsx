@@ -1,8 +1,8 @@
-import type { Widget, Widgets } from '../state';
+import type { Widget, Widgets } from '../../state';
 import {
   calculateTopDistance, deepCopyWidgets, isOverFlow,
   sortInOneColumn, sortInTwoColumn, sortLayoutItemsByRowCol,
-} from '../utils/utils';
+} from '../utils';
 
 function getWidgetAccordingToName(widgets:Widgets, name:string):Widget|undefined {
   const namedWidget = widgets.find((widget) => widget.name === name);

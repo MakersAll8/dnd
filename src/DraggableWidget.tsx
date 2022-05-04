@@ -39,7 +39,7 @@ export const DraggableWidget: FC<DraggableWidgetProps> = memo(
         position: 'absolute',
         transform,
         WebkitTransform: transform,
-        opacity: isDragging ? 0 : 1,
+        opacity: isDragging ? 0 : 3,
         height: height * HEIGHT_COEFFICIENT,
         width: Math.min(layoutSnap.columns, width) * columnWidth - 20,
         margin: '10px',
