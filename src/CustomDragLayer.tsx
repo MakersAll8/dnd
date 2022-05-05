@@ -61,14 +61,14 @@ export function CustomDragLayer({ dashboardRef }:CustomDragLayerProps) {
   const {
     itemType, isDragging, item, initialOffset, currentOffset,
   } = useDragLayer((monitor) => ({
-    item: monitor.getItem() as Widget | CarrouselWidgets,
+    item: monitor.getItem<Widget|CarrouselWidgets>(),
     itemType: monitor.getItemType(),
     initialOffset: monitor.getInitialSourceClientOffset(),
     currentOffset: monitor.getSourceClientOffset(),
     isDragging: monitor.isDragging(),
   }));
-  const currentDraggingItemName = useRef({ name: '', left: 0, top: 0 });
-
+  const currentDraggingItem = useRef({ name: '', left: 0, top: 0 });
+  const isShowingSnap = useRef(false);
   const layoutSnap = useSnapshot(layout);
   const widgetsSnap = useSnapshot(widgets);
   const columnWidth = layoutSnap.getColumnWidth();
@@ -81,6 +81,22 @@ export function CustomDragLayer({ dashboardRef }:CustomDragLayerProps) {
     }
   }, [isDragging, widgetsSnap, layoutSnap]);
 
+  useEffect(() => {
+    // initialize the ref to a new value when change dragging item
+    if (!isDragging) {
+      currentDraggingItem.current = { name: '', left: 0, top: 0 };
+    }
+  }, [isDragging, layoutSnap.columns, widgetsSnap]);
+
+  useEffect(() => {
+    if (!isShowingSnap.current) {
+      const widgetsSnapCopy = deepCopyWidgets(widgetsSnap);
+      const newWidgetsSnap = compactWidget(widgetsSnapCopy, layoutSnap.columns);
+      widgets.splice(0, widgets.length, ...newWidgetsSnap);
+      currentDraggingItem.current = { name: '', left: 0, top: 0 };
+    }
+  });
+
   if (!isDragging) {
     return null;
   }
@@ -90,6 +106,7 @@ export function CustomDragLayer({ dashboardRef }:CustomDragLayerProps) {
     x: currentOffset?.x || 0,
     y:
       (currentOffset?.y || 0)
+      - (dashboardRef.current?.scrollTop || 0)
       - (dashboardRef.current?.offsetTop || 0)
       + (window.scrollY || 0),
     columns: layoutSnap.columns,
@@ -123,25 +140,25 @@ export function CustomDragLayer({ dashboardRef }:CustomDragLayerProps) {
   newWidgetsSnap.unshift(snapWidgetDimUnit);
   newWidgetsSnap = compactWidget(newWidgetsSnap, layoutSnap.columns);
   const { left: _left, top: _top } = getSnapToPlace(newWidgetsSnap);
-  const { name, left: oldLeft, top: oldTop } = currentDraggingItemName.current;
-
-  if (name !== item.name || oldLeft !== _left || oldTop !== _top) {
+  const { name, left: oldLeft, top: oldTop } = currentDraggingItem.current;
+  const y = (currentOffset?.y || 0)
+  - (dashboardRef.current?.offsetTop || 0)
+  + (window.scrollY || 0);
+  if ((name !== item.name || oldLeft !== _left || oldTop !== _top) && y >= 0) {
+    isShowingSnap.current = true;
     const newWidgetList = newWidgetsSnap.filter((i) => i.name !== 'snap');
     if (oldWidget) {
       newWidgetList.push(oldWidget);
     }
-    currentDraggingItemName.current = {
+    currentDraggingItem.current = {
       name: item.name,
       left: _left,
       top: _top,
     };
-    // const x = currentOffset?.x || 0;
-    const y = (currentOffset?.y || 0)
-      - (dashboardRef.current?.offsetTop || 0)
-      + (window.scrollY || 0);
-    if (y >= 0) {
-      widgets.splice(0, widgets.length, ...newWidgetList);
-    }
+    widgets.splice(0, widgets.length, ...newWidgetList);
+  }
+  if (y <= 0) {
+    isShowingSnap.current = false;
   }
 
   const snapWidgetDim = {
@@ -161,9 +178,7 @@ export function CustomDragLayer({ dashboardRef }:CustomDragLayerProps) {
           position: 'absolute',
           ...snapWidgetDim,
         }}
-      >
-        snap to
-      </div>
+      />
       )}
       <div style={getItemStyles(initialOffset, currentOffset)}>
         {renderItem()}

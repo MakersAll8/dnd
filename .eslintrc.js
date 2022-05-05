@@ -23,6 +23,7 @@ module.exports = {
     'react',
     '@typescript-eslint',
     'jest',
+    'react-hooks',
   ],
   rules: {
     'import/extensions': [
@@ -42,6 +43,8 @@ module.exports = {
     'no-shadow': 'off',
     'react/prop-types': 'off',
     'react/jsx-props-no-spreading': 'off',
+    'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
   },
   globals: {
     React: true,
